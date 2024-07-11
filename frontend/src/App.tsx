@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import { Container } from '@mui/material'
 import './App.css'
 import MyButton from './components/MyButton'
 
 const handleClick = () => {
-  
+  alert('btn clicked');
 }
 
 function App() {
@@ -15,7 +13,7 @@ function App() {
   return (
     <>
       <Container>hi</Container>
-      <MyButton onClick={handleClick} buttonName='click me'></MyButton>
+      <MyButton buttonName='111111' onClick={handleClick}/>
     </>
   )
 }
