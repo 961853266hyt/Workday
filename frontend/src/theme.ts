@@ -3,10 +3,10 @@ import { createTheme, ThemeOptions } from "@mui/material";
 const themeOptions: ThemeOptions = {
     palette: {
       primary: {
-        main: '#93309F',
+        main: '#5A99D2',
       },
       secondary: {          // cancel button
-        main: '#dc004e',
+        main: '#abcdef',
       },
       error: {
         main: '#f44336',

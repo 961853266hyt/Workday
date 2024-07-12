@@ -1,21 +1,24 @@
-import { useState } from 'react'
+// import { useState } from 'react'
 import { Container } from '@mui/material'
 import './App.css'
-import Header from './component/Header.tsx'
-import MyButton from './components/MyButton'
+import Header from './components/Header.tsx'
+import { Outlet } from 'react-router-dom'
+// import MyButton from './components/MyButton'
 
-const handleClick = () => {
-  alert('btn clicked');
-}
+// const handleClick = () => {
+//   alert('btn clicked');
+// }
 
 function App() {
-  const [count, setCount] = useState(0)
+  // const [count, setCount] = useState(0)
 
   return (
     <>
       <Header />
-      <Container>hi</Container>
-      <MyButton buttonName='111111' onClick={handleClick}/>
+      <Container>
+        <Outlet />
+      </Container>
+      {/* <MyButton buttonName='111111' onClick={handleClick}/> */}
     </>
   )
 }

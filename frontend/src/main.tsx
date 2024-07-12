@@ -5,12 +5,22 @@ import './index.css'
 import { ThemeProvider } from '@mui/material/styles'
 import theme from './theme'
 import { CssBaseline } from '@mui/material'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Login from './pages/Login'
+import TestTheme from './components/textTheme.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route path="login" element={<Login />} />
+            <Route path="test-theme" element={<TestTheme />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </ThemeProvider>
   </React.StrictMode>,
 )
