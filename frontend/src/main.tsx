@@ -7,7 +7,8 @@ import theme from './theme'
 import { CssBaseline } from '@mui/material'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Login from './pages/Login'
-import TestTheme from './components/textTheme.tsx'
+import Signup from './pages/Signup'
+import TestTheme from './components/TextTheme.tsx'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
@@ -17,6 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
             <Route path="test-theme" element={<TestTheme />} />
           </Route>
         </Routes>
