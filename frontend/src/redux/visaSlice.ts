@@ -3,64 +3,75 @@ import axios from 'axios';
 import { API_URL } from '../constants';
 import { RootState } from './store';
 
-export interface VisaState {
-  visaStatus: any[];
-  status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  error: string | null;
+interface VisaStatus {
+    type: string;
+    startDate: string;
+    endDate: string;
+    status: 'pending' | 'approved' | 'rejected';
+    documents: string[];
+    notes: string;
 }
 
-const initialState: VisaState = {
-  visaStatus: [],
-  status: 'idle',
-  error: null,
-};
+export interface Employee {
+    id: string;
+    name: string;
+    workAuthorizationTitle: string;
+    startDate: string;
+    endDate: string;
+    daysRemaining: number;
+    visaStatus: VisaStatus[];
+  }
+  
 
-export const fetchVisaStatus = createAsyncThunk('visa/fetchVisaStatus', async () => {
-  const response = await axios.get(`${API_URL}/visa-status`);
-  return response.data;
-});
-
-export const updateVisaStatus = createAsyncThunk('visa/updateVisaStatus', async (visaStatus: any) => {
-  const response = await axios.patch(`${API_URL}/visa-status`, visaStatus);
-  return response.data;
-});
-
-const visaSlice = createSlice({
-  name: 'visa',
-  initialState,
-  reducers: {},
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchVisaStatus.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(fetchVisaStatus.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.visaStatus = action.payload;
-      })
-      .addCase(fetchVisaStatus.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || null;
-      })
-      .addCase(updateVisaStatus.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(updateVisaStatus.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        const index = state.visaStatus.findIndex((item) => item.id === action.payload.id);
-        if (index !== -1) {
-          state.visaStatus[index] = action.payload;
-        }
-      })
-      .addCase(updateVisaStatus.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message || null;
-      });
-  },
-});
-
-export const selectVisaStatus = (state: RootState) => state.visa.visaStatus;
-export const selectVisaStatusState = (state: RootState) => state.visa.status;
-export const selectVisaStatusError = (state: RootState) => state.visa.error;
-
-export default visaSlice.reducer;
+  interface VisaState {
+    employees: Employee[];
+    status: 'idle' | 'loading' | 'succeeded' | 'failed';
+    error: string | null;
+  }
+  
+  const initialState: VisaState = {
+    employees: [],
+    status: 'idle',
+    error: null,
+  };
+  
+  export const fetchEmployees = createAsyncThunk('visa/fetchEmployees', async () => {
+    const response = await axios.get(`${API_URL}/employees`);
+    return response.data;
+  });
+  
+  export const updateVisaStatus = createAsyncThunk(
+    'visa/updateVisaStatus', async ({ employeeId, visaId, status }: { employeeId: string; visaId: string; status: 'approved' | 'rejected' }) => {
+      const response = await axios.patch(`${API_URL}/employees/${employeeId}/visa/${visaId}`, { status });
+      return response.data;
+    }
+  );
+  
+  const visaSlice = createSlice({
+    name: 'visa',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchEmployees.pending, (state) => {
+          state.status = 'loading';
+        })
+        .addCase(fetchEmployees.fulfilled, (state, action) => {
+          state.status = 'succeeded';
+          state.employees = action.payload;
+        })
+        .addCase(fetchEmployees.rejected, (state, action) => {
+          state.status = 'failed';
+          state.error = action.error.message || null;
+        })
+        .addCase(updateVisaStatus.fulfilled, (state, action) => {
+          const { id, visaStatus } = action.payload;
+          const existingEmployee = state.employees.find((employee) => employee.id === id);
+          if (existingEmployee) {
+            existingEmployee.visaStatus = visaStatus;
+          }
+        });
+    },
+  });
+  
+  export default visaSlice.reducer;
