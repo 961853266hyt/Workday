@@ -1,0 +1,43 @@
+.root {
+  height: 100vh;
+  background-position: center;
+  background-size: cover;
+  background-color: var(--background-default);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.size {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.paper {
+  margin: 16px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  margin: 0;
+  background-color: var(--primary-color);
+}
+
+.form {
+  width: 100%;
+  margin-top: 8px;
+}
+
+.submit {
+  margin: 24px 0 16px;
+  background-color: var(--primary-color);
+  color: #fff;
+}
+
+.submit:hover {
+  background-color: darken(var(--primary-color), 10%);
+}

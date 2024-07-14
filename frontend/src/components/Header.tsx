@@ -44,7 +44,7 @@ function Header() {
         <Toolbar disableGutters>
           <WbSunnyIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
           <Typography
-            variant="h6"
+            variant="h5"
             noWrap
             component="a"
             href="/"
@@ -56,7 +56,6 @@ function Header() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-              fontSize: '28px',
             }}
           >
             Workday Chuwa
@@ -118,7 +117,6 @@ function Header() {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-              fontSize: '28px',
             }}
           >
             W Chuwa
