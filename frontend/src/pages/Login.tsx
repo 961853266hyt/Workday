@@ -2,95 +2,28 @@ import React from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
-import theme from '../theme'
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import CustomTextField from "../components/CustomTextField";
+import "../style/PopUp.css";
+import "../App.css";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundColor:
-      theme.palette.type === "light"
-        ? theme.palette.grey[50]
-        : theme.palette.grey[900],
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  size: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  paper: {
-    margin: theme.spacing(2, 6),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(0),
-    backgroundColor: theme.palette.primary.main
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1)
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2)
-  }
-}));
+const validationSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  password: Yup.string().required("Password is required"),
+});
 
-// export default function SignInSide(props) {
-  export default function SignIn() {
-  // if(authService.isLoggedIn()){
-
-  //   props.history.push("./home");
-
-  // }
-
-  const classes = useStyles();
-
-  // const [account, setAccount] = React.useState({username:"",password:""});
-
-  // const handelAccount = (property,event)=>{
-
-  //   const accountCopy = {...account};
-  //   accountCopy[property] = event.target.value;
-
-  //   setAccount(accountCopy);
-
-  // }
-
-  // const isVarifiedUser=(username, password)=>{
-
-  //   return users.find((user)=> user.username === username && user.password === password);
-
-  // };
-
-
-  // const handelLogin = ()=>{
-  //     if(isVarifiedUser(account.username,account.password)){
-  //       authService.doLogIn(account.username);
-  //       setAccount({username:"",password:""});
-  //       props.history.push("/home");
-
-  //     }
-  // };
-
+export default function SignIn() {
   return (
-    <Grid container component="main" className={classes.root}>
+    <Grid container component="main" className="root">
       <CssBaseline />
       <Grid
-        className={classes.size}
+        className="size"
         item
         xs={12}
         sm={8}
@@ -98,54 +31,53 @@ const useStyles = makeStyles((theme) => ({
         elevation={1}
         square
       >
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
+        <div className="paper">
+          <Avatar className="avatar">
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
             Log in
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              // onChange={(event)=>handelAccount("username",event)}
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="username"
-              label="Username"
-              name="username"
-            />
-            <TextField
-              // onChange={(event)=>handelAccount("password",event)}
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              // autoComplete="current-password"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              // onClick = {handelLogin}
-            >
-              Sign In
-            </Button>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link href="#" variant="body2">
-                  {"Forget your password? Reset"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
+          <Formik
+            initialValues={{
+              username: "",
+              password: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values) => {
+              alert(JSON.stringify(values, null, 2));
+            }}
+          >
+            {({ handleSubmit }) => (
+              <Form className="form" onSubmit={handleSubmit} noValidate>
+                <CustomTextField
+                  name="username"
+                  label="Username"
+                />
+                <CustomTextField
+                  name="password"
+                  label="Password"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className="submit"
+                  style={{ marginTop: '10px' }}
+                >
+                  Sign In
+                </Button>
+                <Grid container justify="flex-end">
+                  <Grid item style={{ paddingTop: '10px' }}>
+                    <Link href="#" variant="body2">
+                      {"Forget your password? Reset"}
+                    </Link>
+                  </Grid>
+                </Grid>
+              </Form>
+            )}
+          </Formik>
         </div>
       </Grid>
     </Grid>
