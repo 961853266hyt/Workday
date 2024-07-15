@@ -16,7 +16,7 @@ const VisaStatusManagement = () => {
     }, [dispatch]);
 
     const handleUpdateStatus = (employeeId: string, visaId: string, status: 'approved' | 'rejected') => {
-        dispatch(updateVisaStatus(id, visaType, status));
+        dispatch(updateVisaStatus(employeeId, visaId, status));
     };
 
     if (status === 'loading') {
