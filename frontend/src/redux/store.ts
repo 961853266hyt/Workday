@@ -1,14 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer, { UserState } from './userSlice';
 import employeeReducer, { EmployeeState } from './employeeSlice';
-import visaReducer, { VisaState } from './visaSlice';
+import visaStatusReducer, { VisaStatusState } from "./visaStatusSlice";
 
 
 export const store = configureStore({
     reducer: {
         user: userReducer,
         employee: employeeReducer,
-        visa: visaReducer,
+        visaStatus: visaStatusReducer,
         // onboarding: onboardingReducer,
     },
 });

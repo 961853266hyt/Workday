@@ -2,9 +2,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_URL } from '../constants';
 import { RootState } from './store';
+import { Employee } from './types';
 
 export interface EmployeeState {
-  employees: any[];
+  employees: Employee[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | null;
 }

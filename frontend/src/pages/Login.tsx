@@ -1,12 +1,12 @@
 import React from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Link from "@material-ui/core/Link";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import CustomTextField from "../components/CustomTextField";
@@ -68,7 +68,7 @@ export default function SignIn() {
                 >
                   Sign In
                 </Button>
-                <Grid container justify="flex-end">
+                <Grid container justifyContent="flex-end">
                   <Grid item style={{ paddingTop: '10px' }}>
                     <Link href="#" variant="body2">
                       {"Forget your password? Reset"}

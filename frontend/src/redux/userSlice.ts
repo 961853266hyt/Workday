@@ -6,15 +6,21 @@ import { JWT_KEY } from "../constants";
 import { signIn, signUp, verifyToken } from "./userThunks";
 
 export interface UserState {
-    user: any;
+    user: {
+        id: string;
+        name: string;
+        role: 'EMP' | 'HR';
+    } | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
-};
+    isAuthenticated: boolean;
+}
 
-const initialState: UserState =  {
-    user: null,
-    status: 'idle',
+const initialState: UserState = {
+    user: { id:'1', name: 'jj', role: 'EMP'},
+    status: 'succeeded',
     error: null,
+    isAuthenticated: true,
 };
 
 
@@ -25,6 +31,7 @@ const userSlice = createSlice({
     reducers: {
         logOut: (state) => {
             state.user = null;
+            state.isAuthenticated = false;
             localStorage.removeItem(JWT_KEY);
         },
     },
@@ -36,6 +43,7 @@ const userSlice = createSlice({
             .addCase(signIn.fulfilled, (state, action: PayloadAction<any>) => {
                 state.status = 'succeeded';
                 state.user = action.payload.user;
+                state.isAuthenticated = true;
                 localStorage.setItem(JWT_KEY, action.payload.token);
             })
             .addCase(signIn.rejected, (state, action) => {
@@ -46,9 +54,10 @@ const userSlice = createSlice({
                 state.status = 'loading';
             })
             .addCase(signUp.fulfilled, (state, action: PayloadAction<any>) => {
-            state.status = 'succeeded';
-            state.user = action.payload.user;
-            localStorage.setItem(JWT_KEY, action.payload.token);
+                state.status = 'succeeded';
+                state.user = action.payload.user;
+                state.isAuthenticated = true;
+                localStorage.setItem(JWT_KEY, action.payload.token);
             })
             .addCase(signUp.rejected, (state, action) => {
                 state.status = 'failed';
@@ -60,10 +69,12 @@ const userSlice = createSlice({
             .addCase(verifyToken.fulfilled, (state, action: PayloadAction<any>) => {
                 state.status = 'succeeded';
                 state.user = action.payload.user;
+                state.isAuthenticated = true;
             })
             .addCase(verifyToken.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message || null;
+                state.isAuthenticated = false;
             });
     }
 });
