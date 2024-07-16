@@ -21,7 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="test-theme" element={<TestTheme />} />
-            <Route path="/visa-status" element={<VisaStatusManagement />} />
+            <Route path="visa-status" element={<VisaStatusManagement />} />
           </Route>
         </Routes>
       </BrowserRouter>
