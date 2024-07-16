@@ -13,15 +13,27 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import { useNavigate } from 'react-router-dom';
 
-const UserPages = ['Personal Information', 'Visa Status Management'];
-const HRpages = ['Home', 'Employee Profiles', 'Visa Status Management', 'Hiring Management'];
+const UserPages = [
+  { name: 'Personal Information', path: '/personal-information' },
+  { name: 'Visa Status Management', path: '/visa-status' }
+];
+const HRpages = [
+  { name: 'Home', path: '/' },
+  { name: 'Employee Profiles', path: '/employee-profiles' },
+  { name: 'Visa Status Management', path: '/visa-status' },
+  { name: 'Hiring Management', path: '/hiring-management' }
+];
+// const UserPages = ['Personal Information', 'Visa Status Management'];
+// const HRpages = ['Home', 'Employee Profiles', 'Visa Status Management', 'Hiring Management'];
 const settings = ['Logout'];
 
 function Header() {
   const [isHR, setIsHR] = useState(false);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -36,6 +48,11 @@ function Header() {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+
+  const handleMenuItemClick = (path: string) => {
+    navigate(path);
+    handleCloseNavMenu();
   };
 
   return (
@@ -91,13 +108,13 @@ function Header() {
               }}
             >
               {isHR && (HRpages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={() => {handleMenuItemClick(page.path)}}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               )))}
               {!isHR && (UserPages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
+                <MenuItem key={page.name} onClick={() => {handleMenuItemClick(page.path)}}>
+                  <Typography textAlign="center">{page.name}</Typography>
                 </MenuItem>
               )))}
             </Menu>
@@ -124,20 +141,20 @@ function Header() {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end', mr: 4 }}>
             {isHR && (HRpages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.name}
+                onClick={() => {handleMenuItemClick(page.path)}}
                 sx={{ fontSize: '18px', my: 2, color: 'white', display: 'block', textTransform: 'none' }}
               >
-                {page}
+                {page.name}
               </Button>
             )))}
             {!isHR && (UserPages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
+                key={page.name}
+                onClick={() => {handleMenuItemClick(page.path)}}
                 sx={{ fontSize: '18px', my: 2, color: 'white', display: 'block', textTransform: 'none' }}
               >
-                {page}
+                {page.name}
               </Button>
             )))}
           </Box>
