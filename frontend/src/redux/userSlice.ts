@@ -124,6 +124,14 @@ const userSlice = createSlice({
                 state.isAuthenticated = true;
                 localStorage.setItem(JWT_KEY, action.payload.token);
             })
+            .addCase(signIn.rejected, (state) => {
+                state.user = null;
+                state.isAuthenticated = false;
+            })
+            .addCase(signUp.rejected, (state) => {
+                state.user = null;
+                state.isAuthenticated = false;
+            })
             .addCase(verifyToken.fulfilled, (state, action: PayloadAction<any>) => {
                 state.user = action.payload.user;
                 state.isAuthenticated = true;

@@ -46,3 +46,7 @@ export interface Document {
     user: User;
     token: string;
   }
+
+  export interface  MyKnownError {
+    errorMessage: string
+  }

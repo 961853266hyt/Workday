@@ -28,7 +28,7 @@ const validationSchema = Yup.object({
 
 export default function SignIn() {
   const dispatch = useDispatch();
-  const user = useSelector(selectUser);
+  //const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
   const handleLogin = async (values: any) => {
@@ -37,8 +37,6 @@ export default function SignIn() {
       navigate('/');
     }
   }
-
-
 
   return (
     <Grid container component="main" className="root">

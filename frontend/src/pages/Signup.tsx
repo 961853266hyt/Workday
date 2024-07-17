@@ -12,15 +12,33 @@ import * as Yup from "yup";
 import CustomTextField from "../components/CustomTextField";
 import "../style/PopUp.css";
 import "../App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { signUp } from "../redux/userThunks";
+import { UnknownAction } from "@reduxjs/toolkit";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First Name is required"),
   lastName: Yup.string().required("Last Name is required"),
+  username: Yup.string().required("Username is required"),
   email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
+
 export default function SignUp() {
+  const dispatch = useDispatch();
+  const handleSignUp = async (values: any) => {
+    try {
+      dispatch(signUp(values) as unknown as UnknownAction);
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        alert(error);
+      } else {
+        alert('An error occurred during sign-up. Please try again later.');
+        console.log(error);
+      }
+    }
+  }
 
   return (
     <Grid container component="main" className="root">
@@ -45,12 +63,13 @@ export default function SignUp() {
             initialValues={{
               firstName: "",
               lastName: "",
+              username: "",
               email: "",
               password: "",
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-              alert(JSON.stringify(values, null, 2));
+              handleSignUp(values);
             }}
           >
             {({ handleSubmit }) => (
@@ -66,6 +85,12 @@ export default function SignUp() {
                     <CustomTextField
                       name="lastName"
                       label="Last Name"
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <CustomTextField
+                      name="username"
+                      label="Username"
                     />
                   </Grid>
                   <Grid item xs={12}>
