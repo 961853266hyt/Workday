@@ -35,3 +35,14 @@ export interface Document {
     loading: boolean;
     error: string | null;
   }
+
+  export interface User {
+    id: string;
+    name: string;
+    role: 'EMP' | 'HR';
+  }
+
+  export interface signInPayload {
+    user: User;
+    token: string;
+  }
