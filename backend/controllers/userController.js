@@ -60,9 +60,8 @@ const getAllUsers = async (req, res) => {
 }
 
 const fetchUserById = async (req, res) => {
-    const { userId } = req.params;
     try {
-        const user = await User.findById(userId);
+        const user = await User.findById(req.params.id);
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -73,10 +72,9 @@ const fetchUserById = async (req, res) => {
 }
 
 const updateUserById = async (req, res) => {
-    const { userId } = req.params;
-    const { username, email, role } = req.body;
+    const { id } = req.params;
     try {
-        const user = await User.findByIdAndUpdate(userId, req.body, { new: true });
+        const user = await User.findByIdAndUpdate(id, req.body, { new: true });
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
