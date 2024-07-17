@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -31,11 +31,13 @@ export default function SignIn() {
   //const user = useSelector(selectUser);
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
-  const handleLogin = async (values: any) => {
-    dispatch(signIn(values) as unknown as UnknownAction);
+  useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
     }
+  }, [isAuthenticated, navigate]);
+  const handleLogin = async (values: any) => {
+    dispatch(signIn(values) as unknown as UnknownAction);
   }
 
   return (

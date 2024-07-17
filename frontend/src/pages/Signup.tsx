@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -15,6 +15,8 @@ import "../App.css";
 import { useDispatch, useSelector } from "react-redux";
 import { signUp } from "../redux/userThunks";
 import { UnknownAction } from "@reduxjs/toolkit";
+import { selectIsAuthenticated } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required("First Name is required"),
@@ -27,10 +29,18 @@ const validationSchema = Yup.object({
 
 export default function SignUp() {
   const dispatch = useDispatch();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+  
   const handleSignUp = async (values: any) => {
       dispatch(signUp(values) as unknown as UnknownAction);
   }
-
+  
   return (
     <Grid container component="main" className="root">
       <CssBaseline />
