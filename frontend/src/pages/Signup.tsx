@@ -19,8 +19,8 @@ import { selectIsAuthenticated } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
-  firstName: Yup.string().required("First Name is required"),
-  lastName: Yup.string().required("Last Name is required"),
+  // firstName: Yup.string().required("First Name is required"),
+  // lastName: Yup.string().required("Last Name is required"),
   username: Yup.string().required("Username is required"),
   email: Yup.string().email("Invalid email address").required("Email is required"),
   password: Yup.string().required("Password is required"),
@@ -36,7 +36,7 @@ export default function SignUp() {
       navigate('/');
     }
   }, [isAuthenticated, navigate]);
-  
+
   const handleSignUp = async (values: any) => {
       dispatch(signUp(values) as unknown as UnknownAction);
   }
@@ -62,8 +62,8 @@ export default function SignUp() {
           </Typography>
           <Formik
             initialValues={{
-              firstName: "",
-              lastName: "",
+              // firstName: "",
+              // lastName: "",
               username: "",
               email: "",
               password: "",
@@ -76,7 +76,7 @@ export default function SignUp() {
             {({ handleSubmit }) => (
               <Form className="form" onSubmit={handleSubmit} noValidate>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  {/* <Grid item xs={12} sm={6}>
                     <CustomTextField
                       name="firstName"
                       label="First Name"
@@ -87,7 +87,7 @@ export default function SignUp() {
                       name="lastName"
                       label="Last Name"
                     />
-                  </Grid>
+                  </Grid> */}
                   <Grid item xs={12}>
                     <CustomTextField
                       name="username"

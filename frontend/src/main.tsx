@@ -10,6 +10,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import TestTheme from './components/TextTheme.tsx'
 import VisaStatusManagement from './pages/VisaStatusManagement.tsx'
+import OnboardingApplication from './pages/OnboardingApplicationPage.tsx'
 import ProtectedRoute from './components/ProtectedRoute.tsx'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
@@ -37,6 +38,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="/" element={<App />}>
+            <Route path="onboarding" element={<OnboardingApplication />} />
             <Route path="test-theme" element={<TestTheme />} />
             <Route path="visa-status" element={<VisaStatusManagement />} />
           </Route>
