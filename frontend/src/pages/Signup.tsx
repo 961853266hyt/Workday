@@ -28,16 +28,7 @@ const validationSchema = Yup.object({
 export default function SignUp() {
   const dispatch = useDispatch();
   const handleSignUp = async (values: any) => {
-    try {
       dispatch(signUp(values) as unknown as UnknownAction);
-    } catch (error: any) {
-      if (error.response.status === 400) {
-        alert(error);
-      } else {
-        alert('An error occurred during sign-up. Please try again later.');
-        console.log(error);
-      }
-    }
   }
 
   return (

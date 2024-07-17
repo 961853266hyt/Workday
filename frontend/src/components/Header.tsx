@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -14,6 +14,10 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser } from '../redux/userSlice';
+import { useDispatch } from 'react-redux';
+import { logOut } from '../redux/userSlice';
 
 const UserPages = [
   { name: 'Personal Information', path: '/personal-information' },
@@ -34,6 +38,15 @@ function Header() {
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (user?.role === 'HR') {
+      setIsHR(true);
+    }
+  }
+  , [user]);
+
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -54,6 +67,13 @@ function Header() {
     navigate(path);
     handleCloseNavMenu();
   };
+
+  const handleLogout = () => {
+    dispatch(logOut());
+    handleCloseUserMenu();
+    navigate('/login');
+  }
+    
 
   return (
     <AppBar position="fixed">
@@ -182,7 +202,7 @@ function Header() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={handleLogout}> 
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
