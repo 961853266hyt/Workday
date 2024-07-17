@@ -4,8 +4,13 @@ import { API_URL } from "../constants";
 import { signInPayload } from "./types";
 
 export const signIn:AsyncThunk<signInPayload, {username: string; password: string}, {}> = createAsyncThunk('user/signIn', async(credentials) => {
-    const res = await axios.post(`${API_URL}/auth/signin`, credentials);
-    return res.data;
+    try {
+        const res = await axios.post(`${API_URL}/auth/signin`, credentials);
+        return res.data;
+    } catch (error) {
+        alert('password or email incorrect!'); 
+        console.log(error);
+    }
 });
 
 export const signUp:AsyncThunk<signInPayload, {username: string; email:string;password: string; role: string}, {}> = createAsyncThunk('user/signUp', async(credentials) => {

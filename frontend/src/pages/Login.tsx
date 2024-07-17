@@ -12,13 +12,34 @@ import * as Yup from "yup";
 import CustomTextField from "../components/CustomTextField";
 import "../style/PopUp.css";
 import "../App.css";
+import { useDispatch, useSelector } from "react-redux";
+import { selectUser, selectIsAuthenticated } from "../redux/userSlice";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { signIn } from "../redux/userThunks";
+import { UnknownAction } from "@reduxjs/toolkit";
+
+
 
 const validationSchema = Yup.object({
   username: Yup.string().required("Username is required"),
   password: Yup.string().required("Password is required"),
 });
 
+
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const navigate = useNavigate();
+  const handleLogin = async (values: any) => {
+    dispatch(signIn(values) as unknown as UnknownAction);
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }
+
+
+
   return (
     <Grid container component="main" className="root">
       <CssBaseline />
@@ -45,7 +66,8 @@ export default function SignIn() {
             }}
             validationSchema={validationSchema}
             onSubmit={(values) => {
-              alert(JSON.stringify(values, null, 2));
+              //alert(JSON.stringify(values, null, 2));
+              handleLogin(values);
             }}
           >
             {({ handleSubmit }) => (

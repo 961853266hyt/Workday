@@ -98,11 +98,15 @@ const initialState: UserState = {
     isAuthenticated: false,
 };
 
+// const initialState: UserState = {
+//     user: { id:'1', username: 'jj', role: 'EMP'},
+//     isAuthenticated: true,
+// };
 const userSlice = createSlice({
     name: 'User',
     initialState,
     reducers: {
-        logOut: (state) => {
+        logOut: (state: UserState) => {
             state.user = null;
             state.isAuthenticated = false;
             localStorage.removeItem(JWT_KEY);

@@ -38,7 +38,7 @@ export interface Document {
 
   export interface User {
     id: string;
-    name: string;
+    username: string;
     role: 'EMP' | 'HR';
   }
 
