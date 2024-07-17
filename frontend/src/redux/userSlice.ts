@@ -18,10 +18,10 @@ import { User } from "./types";
 // }
 
 // const initialState: UserState = {
-//     user: { id:'1', name: 'jj', role: 'EMP'},
-//     status: 'succeeded',
+//     user: null,
+//     status: 'idle',
 //     error: null,
-//     isAuthenticated: true,
+//     isAuthenticated: false,
 // };
 
 
@@ -33,6 +33,7 @@ import { User } from "./types";
 //         logOut: (state) => {
 //             state.user = null;
 //             state.isAuthenticated = false;
+//             state.status = 'idle';
 //             localStorage.removeItem(JWT_KEY);
 //         },
 //     },
@@ -85,6 +86,7 @@ import { User } from "./types";
 // export const selectUser = (state: RootState) => state.user.user;
 // export const selectUserStatus = (state: RootState) => state.user.status;
 // export const selectUserError = (state: RootState) => state.user.error;
+// export const selectIsAuthenticated = (state: RootState) => state.user.isAuthenticated;
 
 // export default userSlice.reducer;
 
@@ -110,7 +112,7 @@ const userSlice = createSlice({
             state.user = null;
             state.isAuthenticated = false;
             localStorage.removeItem(JWT_KEY);
-        },
+        }
     },
     extraReducers: (builder) => {
         builder

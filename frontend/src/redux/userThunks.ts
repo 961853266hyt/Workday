@@ -3,6 +3,7 @@ import axios from 'axios';
 import { API_URL } from "../constants";
 import { signInPayload } from "./types";
 
+
 export const signIn:AsyncThunk<signInPayload, {username: string; password: string}, {}> = createAsyncThunk('user/signIn', async(credentials) => {
     try {
         const res = await axios.post(`${API_URL}/auth/signin`, credentials);
@@ -35,5 +36,6 @@ export const verifyToken:AsyncThunk<signInPayload, string, {}> = createAsyncThun
             Authorization: `Bearer ${token}`,
         },
     });
+
     return res.data;
 });

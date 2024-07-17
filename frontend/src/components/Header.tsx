@@ -33,6 +33,7 @@ const HRpages = [
 // const HRpages = ['Home', 'Employee Profiles', 'Visa Status Management', 'Hiring Management'];
 const settings = ['Logout'];
 
+
 function Header() {
   const [isHR, setIsHR] = useState(false);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -46,8 +47,8 @@ function Header() {
     }
   }
   , [user]);
-
-
+  const setting = user === null ? 'Login' : 'Logout';
+ 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -73,6 +74,13 @@ function Header() {
     handleCloseUserMenu();
     navigate('/login');
   }
+
+  const handleLogin = () => {
+    handleCloseUserMenu();
+    navigate('/login');
+  }
+
+  const handleSetting = user === null ? handleLogin : handleLogout;
     
 
   return (
@@ -201,11 +209,16 @@ function Header() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
+              {/* {settings.map((setting) => (
                 <MenuItem key={setting} onClick={handleLogout}> 
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
-              ))}
+              ))} */}
+              {
+                <MenuItem onClick={handleSetting}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              }
             </Menu>
           </Box>
         </Toolbar>

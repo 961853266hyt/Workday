@@ -8,7 +8,7 @@ const VisaStatusManagement: React.FC = () => {
   const userRole = useSelector((state: RootState) => state.user.user?.role);
   const employees = useSelector((state: RootState) => state.visaStatus.employees);
   if (!userRole) {
-    return <div>Loading...</div>;
+    return <div>please login first</div>;
   }
 
   // if (!Array.isArray(employees)) {
