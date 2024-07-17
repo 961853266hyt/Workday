@@ -27,7 +27,7 @@ export const createUser = async (req: Request, res: Response) => {
     }
 }
 
-// use username instead of email
+//use username instead of email
 export const signIn = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     try {
