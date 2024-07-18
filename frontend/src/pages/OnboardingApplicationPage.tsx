@@ -6,6 +6,8 @@ import { TextField, Button, Grid, Typography, Container, Paper, FormControl, Inp
 import { profile } from 'console';
 import CustomTextField from '../components/CustomTextField';
 import { current } from '@reduxjs/toolkit';
+import { selectUser } from '../redux/userSlice';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const ssnRegex = /^\d{3}-\d{2}-\d{4}$/;
 const phoneRegex = /^(\+?\d{1,4}[\s-]?)?((\d{3}[\s-]?\d{3}[\s-]?\d{4})|(\(\d{3}\)\s?\d{3}[\s-]?\d{4}))$/; // matches US phone numbers
@@ -59,10 +61,15 @@ const validationSchema = Yup.object().shape({
   
   const OnboardingApplication = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
    // const status = useSelector(selectOnboardingStatus);
-   const status = '';
-   const error = 'error';
     //const error = useSelector(selectOnboardingError);
+    const user = useSelector(selectUser);
+    if (!user) {
+      navigate('/login');
+    }
+
+
     const handleSubmit = async (values: any, { setSubmitting, setErrors }:FormikHelpers<any>) => {
       try{
         const formData = new FormData();
@@ -76,7 +83,6 @@ const validationSchema = Yup.object().shape({
         console.log(formData);
 
       } catch (error) {
-        // 捕获Yup验证错误
         if (error instanceof Yup.ValidationError) {
           const errorMessages: { [key: string]: string } = {};
           error.inner.forEach(err => {

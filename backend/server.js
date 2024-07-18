@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 const userRouter = require('./routers/userRouter');
 const authRouter = require('./routers/authRouter');
+const documentRouter = require('./routers/documentRouter');
 const connectDB = require('./database');
 const port = 8000;
 
@@ -14,7 +15,8 @@ app.use(cors());
 
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
-app.use('/uploads', express.static('uploads')); // serve the uploads folder
+app.use('/api/documents', documentRouter);
+app.use('/uploads', express.static('uploads')); // dowload url: http://localhost:8000/uploads/filename
 
 // Define some fake data
 // const fakeEmployees = [

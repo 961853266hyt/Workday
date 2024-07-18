@@ -2,6 +2,7 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const Document = require('../models/Document');
 
 const createUser = async (req, res) => {
     const { username, email, password, role } = req.body;
@@ -98,18 +99,7 @@ const updateUserById = async (req, res) => {
     }
 }
 
-const uploadFile = async (req, res) => {
-    upload.single('file'), (req, res) => {
-        try {
-            if (!req.file) {
-              return res.status(400).json({ message: 'Please upload a file' });
-            }
-            res.status(200).json({ filePath: req.file.path });
-          } catch (error) {
-            res.status(500).json({ message: 'File upload failed', error });
-          }
-    }
-}
+
 
 module.exports = {
     createUser,
@@ -118,5 +108,4 @@ module.exports = {
     getAllUsers,
     fetchUserById,
     updateUserById,
-    uploadFile
 };
