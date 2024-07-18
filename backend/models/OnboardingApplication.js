@@ -20,20 +20,20 @@ const OnboardingApplicationSchema = new Schema({
       state: { type: String },
       zip: { type: String }
     },
-    phoneNumbers: {
-      cell: { type: String, required: true },
-      work: { type: String }
-    },
+    cell: { type: String, required: true },
+    work: { type: String },
     ssn: { type: String, required: true },
     dateOfBirth: { type: Date, required: true },
     gender: { type: String, required: true },
-    isCitizenOrPermanentResident: { type: Boolean, required: true },
+    isCitizenOrPermanentResident: { type: String, enum:['Yes', 'No'], required: true },
+    greenCardOrCitizen: { type: String, enum: ['Green Card', 'Citizen', ''] },
     workAuthorization: {
-      status: { type: String },
+    //   status: { type: String },
       startDate: { type: Date },
       endDate: { type: Date },
-      visaType: { type: String },
-      optReceipt: { type: String }
+      visaType: { type: String, enum: ['F1(CPT/OPT)', 'H1-B', 'L2', 'H4', 'Other', ''] },
+      optReceipt: { type: String },
+      otherVisaTitle: { type: String },
     },
     references: {
       firstName: { type: String },
