@@ -1,9 +1,10 @@
+const { defaultMaxListeners } = require('events');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const OnboardingApplicationSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
+    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], default:'Pending', required: true },
     feedback: { type: String },
     submissionDate: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },

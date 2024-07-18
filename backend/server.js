@@ -4,6 +4,7 @@ const cors = require('cors');
 const userRouter = require('./routers/userRouter');
 const authRouter = require('./routers/authRouter');
 const documentRouter = require('./routers/documentRouter');
+const onboardingRouter = require('./routers/onboardingRouter');
 const connectDB = require('./database');
 const port = 8000;
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/documents', documentRouter);
+app.use('/api/onboarding', onboardingRouter);
 app.use('/uploads', express.static('uploads')); // dowload url: http://localhost:8000/uploads/filename
 
 // Define some fake data
