@@ -14,7 +14,7 @@ app.use(cors());
 
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
-
+app.use('/uploads', express.static('uploads')); // serve the uploads folder
 
 // Define some fake data
 // const fakeEmployees = [

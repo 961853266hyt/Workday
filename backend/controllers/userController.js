@@ -98,11 +98,25 @@ const updateUserById = async (req, res) => {
     }
 }
 
+const uploadFile = async (req, res) => {
+    upload.single('file'), (req, res) => {
+        try {
+            if (!req.file) {
+              return res.status(400).json({ message: 'Please upload a file' });
+            }
+            res.status(200).json({ filePath: req.file.path });
+          } catch (error) {
+            res.status(500).json({ message: 'File upload failed', error });
+          }
+    }
+}
+
 module.exports = {
     createUser,
     signIn,
     verifyToken,
     getAllUsers,
     fetchUserById,
-    updateUserById
+    updateUserById,
+    uploadFile
 };
