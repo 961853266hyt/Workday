@@ -13,7 +13,7 @@ const OnboardingApplicationSchema = new Schema({
     lastName: { type: String, required: true },
     middleName: { type: String },
     preferredName: { type: String },
-    profilePicture: { type: String },
+    profilePicture: { type: Schema.Types.ObjectId, ref: 'Document' },
     currentAddress: {
       building: { type: String },
       street: { type: String },
@@ -33,7 +33,7 @@ const OnboardingApplicationSchema = new Schema({
       startDate: { type: Date },
       endDate: { type: Date },
       visaType: { type: String, enum: ['F1(CPT/OPT)', 'H1-B', 'L2', 'H4', 'Other', ''] },
-      optReceipt: { type: String },
+      optReceipt: { type: Schema.Types.ObjectId, ref: 'Document' },
       otherVisaTitle: { type: String },
     },
     references: {

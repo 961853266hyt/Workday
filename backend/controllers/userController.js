@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
         const user = new User({ username, email, password: hashedPassword, role });
         await user.save();
         const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: '1d' });
-        res.status(201).json({ user: {id: user._id, username, role}, token }); 
+        res.status(201).json({ user: {id: user._id, username, role, email}, token }); 
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -36,7 +36,7 @@ const signIn = async (req, res) => {
     try {
         const user = await User
             .findOne({ username })
-            .select('username password role');
+            .select('username password role email');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -45,7 +45,7 @@ const signIn = async (req, res) => {
             return res.status(401).json({ message: 'Invalid password' });
         }
         const token = jwt.sign({ id: user._id }, process.env.SECRET, { expiresIn: '1d' });
-        res.json({ user: {id: user._id, username, role: user.role}, token });
+        res.json({ user: {id: user._id, username, role: user.role, email: user.email}, token });
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
@@ -55,11 +55,11 @@ const verifyToken = async (req, res) => {
     const token = req.headers.authorization.split(' ')[1];
     try {
         const decoded = jwt.verify(token, process.env.SECRET);
-        const user = await User.findById(decoded.id).select('username role');
+        const user = await User.findById(decoded.id).select('username role email');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
-        res.json({ user: {id: user._id, username: user.username, role: user.role} });
+        res.json({ user: {id: user._id, username: user.username, role: user.role, email:user.email} });
     } catch (err) {
         res.status(401).json({ message: 'Invalid token' });
     }

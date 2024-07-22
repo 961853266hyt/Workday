@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, FieldArray, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { TextField, Button, Grid, Typography, Container, Paper, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { profile } from 'console';
 import CustomTextField from '../components/CustomTextField';
-import { current } from '@reduxjs/toolkit';
+import { current, UnknownAction } from '@reduxjs/toolkit';
 import { selectUser } from '../redux/userSlice';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { submitOnboardingApplication } from '../redux/onboardingSlice';
+import axios from 'axios';
+
 
 const ssnRegex = /^\d{3}-\d{2}-\d{4}$/;
 const phoneRegex = /^(\+?\d{1,4}[\s-]?)?((\d{3}[\s-]?\d{3}[\s-]?\d{4})|(\(\d{3}\)\s?\d{3}[\s-]?\d{4}))$/; // matches US phone numbers
@@ -15,7 +18,6 @@ const zipRegex = /^\d{5}$/;
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Last Name is required'),
-    //email: Yup.string().email('Invalid email address').required('Email is required'),
     cell: Yup.string().matches(phoneRegex, 'phone number is not valid').required('Phone number is required'),
     ssn: Yup.string().matches(ssnRegex, 'SSN is not valid').required('SSN is required'),
     dateOfBirth: Yup.date().required('Date of Birth is required'),
@@ -65,23 +67,46 @@ const validationSchema = Yup.object().shape({
    // const status = useSelector(selectOnboardingStatus);
     //const error = useSelector(selectOnboardingError);
     const user = useSelector(selectUser);
-    if (!user) {
-      navigate('/login');
-    }
 
+   
+    // useEffect(() => {
+    //     if (!user) {
+    //         navigate('/login');
+    //     }
+    //     }
+    // , [user, navigate]);
+
+
+    const appendFormData = (formData: FormData, key: string, value:any) => {
+      if (value instanceof File) {
+        formData.append(key, value);
+        console.log('file appended', key, value);
+      } else if (typeof value === 'object' && value !== null) {
+        Object.keys(value).forEach(subKey => {
+          appendFormData(formData, `${key}.${subKey}`, value[subKey]);
+        });
+      } else {
+        formData.append(key, value);
+      }
+    };
 
     const handleSubmit = async (values: any, { setSubmitting, setErrors }:FormikHelpers<any>) => {
       try{
         const formData = new FormData();
-        Object.keys(values).forEach((key) => { 
+        // add user id to form data
+        if (!user) {
+            throw new Error('User is not logged in');
+        } else {
+            formData.append('userId', user.id);
+        }
+        
+        Object.keys(values).forEach((key) => {
           if (values[key] !== null && values[key] !== undefined && values[key] !== '') {
-            formData.append(key, values[key]);
+            appendFormData(formData, key, values[key]);
           }
         });
-        //await dispatch(submitOnboardingApplication(formData));
-        alert(JSON.stringify(values, null, 2));
-        console.log(formData);
-
+        await dispatch(submitOnboardingApplication(formData));
+        alert('Application submitted successfully!');      
       } catch (error) {
         if (error instanceof Yup.ValidationError) {
           const errorMessages: { [key: string]: string } = {};
@@ -111,7 +136,6 @@ const validationSchema = Yup.object().shape({
           <Formik
             initialValues={{ firstName: '', lastName: '', middleName: '',preferredName : '',
                 profilePicture: null,
-                email: '',
                 currentAddress: { building: '', street: '', city: '', state: '', zip: '' },
                 cell: '', work: '' , 
                 ssn: '', dateOfBirth: null, gender: '',
@@ -144,6 +168,7 @@ const validationSchema = Yup.object().shape({
                 ],
                 }}
             validationSchema={validationSchema}
+            enableReinitialize
             validate={(values) => {
                 const errors: { [key: string]: string } = {};
                 try {
@@ -221,7 +246,9 @@ const validationSchema = Yup.object().shape({
                         id="profilePicture"
                         name="profilePicture"
                         type="file"
-                        onChange={(event: any) => {}}
+                        onChange={(event: any) => {
+                            setFieldValue('profilePicture', event.currentTarget.files[0]);
+                        }}
                         />
                   </Grid>
                   <Grid item xs={12}>
@@ -262,7 +289,8 @@ const validationSchema = Yup.object().shape({
                   <Grid item xs={12}>
                     <Field
                       name="email"
-                      label="Email Address"
+                      //label="Email Address"
+                      value = {user?.email}
                       component={TextField}
                       disabled={true} 
                     />
@@ -500,7 +528,9 @@ const validationSchema = Yup.object().shape({
                                 id="optReceipt"
                                 name="optReceipt"
                                 type="file"
-                                onChange={(event: any) => {}}
+                                onChange={(event: any) => {
+                                    setFieldValue('workAuthorization.optReceipt', event.currentTarget.files[0]);
+                                }}
                             />
                             </Grid>
                         )}

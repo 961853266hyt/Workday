@@ -1,4 +1,4 @@
-import OnboardingApplication from "../models/OnboardingApplication";
+import OnboardingApplication from "../../models/OnboardingApplication";
 import { Request, Response } from 'express';
 // import { Document } from '../models/Document';
 
