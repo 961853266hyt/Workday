@@ -30,17 +30,11 @@ const createNewOnboardingApplication = async (req, res) => {
         // deal with files
         const profilePicture = req.files['profilePicture'] ? req.files['profilePicture'][0] : null;
         const optReceipt = req.files['workAuthorization.optReceipt'] ? req.files['workAuthorization.optReceipt'][0] : null;
-
+        
         if (profilePicture) {
-        const profileDoc = new Document({
-            userId: parsedFormData.userId,
-            type: 'profilePicture',
-            url: profilePicture.path,
-            status: 'Pending'
-        });
-        await profileDoc.save();
-        parsedFormData.profilePicture = profileDoc._id;
+            parsedFormData.profilePicture = profilePicture.path;
         }
+
         if (optReceipt) {
         const optReceiptDoc = new Document({
             userId: parsedFormData.userId,
@@ -105,9 +99,22 @@ const updateOnboardingApplicationById = async (req, res) => {
     }
 }
 
+const getOnboardingApplicationByUserId = async (req, res) => {
+    try {
+        const application = await OnboardingApplication.findOne({ userId: req.params.userId });
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+        res.status(200).json(application);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
 module.exports = {
     getAllOnboardingApplications,
     getOnboardingApplicationById,
     updateOnboardingApplicationById,
     createNewOnboardingApplication,
+    getOnboardingApplicationByUserId,
 }

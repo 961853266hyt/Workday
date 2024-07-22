@@ -31,6 +31,16 @@ export const submitOnboardingApplication:AsyncThunk< any, FormData, {} > = creat
   }
 );
 
+export const fetchOnboardingStatus:AsyncThunk<any, string, {}> = createAsyncThunk('onboarding/fetchStatus', async (userId: string, thunkAPI) => {
+  try {
+    const response = await axios.get(`${API_URL}/onboarding/user/${userId}`);
+    return response.data;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+}
+);
+
 const onboardingSlice = createSlice({
   name: 'onboarding',
   initialState,

@@ -36,6 +36,5 @@ export const verifyToken:AsyncThunk<signInPayload, string, {}> = createAsyncThun
             Authorization: `Bearer ${token}`,
         },
     });
-
     return res.data;
 });
