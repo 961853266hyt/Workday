@@ -40,6 +40,7 @@ export const fetchOnboardingApplication:AsyncThunk<any, string, {}> = createAsyn
     // fetch file 
     const documents = await axios.get(`${API_URL}/documents/user/${userId}`);
     response.data.documents = documents.data;
+    console.log('files fetched', response.data.documents);
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data);

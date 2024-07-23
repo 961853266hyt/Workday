@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
 import PendingOnboarding from '../components/PendingOnboarding';
+import { red } from '@mui/material/colors';
 
 const ssnRegex = /^\d{3}-\d{2}-\d{4}$/;
 const phoneRegex = /^(\+?\d{1,4}[\s-]?)?((\d{3}[\s-]?\d{3}[\s-]?\d{4})|(\(\d{3}\)\s?\d{3}[\s-]?\d{4}))$/;
@@ -145,23 +146,38 @@ const OnboardingApplication = () => {
     const handleSubmit = async (values: any, { setSubmitting, setErrors }: FormikHelpers<any>) => {
         try {
             const formData = new FormData();
-            if (!user) {
-                throw new Error('User is not logged in');
-            } else if(!formData.has('userId')) { 
-                formData.append('userId', user.id);
-            }
+            
 
             Object.keys(values).forEach((key) => {
                 if (values[key] !== null && values[key] !== undefined && values[key] !== '') {
+                  if (key !== '_id') // exclude _id from form data
                     appendFormData(formData, key, values[key]);
                 }
             });
+
+            if (!user) {
+              throw new Error('User is not logged in');
+            } else if(!formData.has('userId')) { 
+              formData.append('userId', user.id);
+            }
+
             if (onboardingData && onboardingData.status === 'Rejected') {
+                // Object.keys(onboardingData).forEach((key) => {
+                //   console.log(key, onboardingData[key]);
+                // });
+
+                // formData.forEach((value, key) => {
+
+                //   console.log(key, value);
+                // }
+                //);
                 await dispatch(updateOnboardingApplication(formData));
                 alert('Application updated successfully!');
+                navigate('/onboarding');
             } else {
                 await dispatch(submitOnboardingApplication(formData));
                 alert('Application submitted successfully!');
+                navigate('/onboarding');
             }
             
         } catch (error) {
@@ -197,40 +213,35 @@ const OnboardingApplication = () => {
     }
 
     if (onboardingStatus === 'succeeded' && onboardingData.status === 'Pending') {
-        // return (
-        //     <Container component="main" maxWidth="sm">
-        //         <Paper style={{ padding: '16px', marginTop: '16px' }}>
-        //             <Typography component="h1" variant="h5" align="center">
-        //                 Please wait for HR to review your application
-        //             </Typography>
-        //             <Typography component="h6" variant="h6" align="center">
-        //                 Submitted Application
-        //             </Typography>
-        //             <pre>{JSON.stringify(onboardingData, null, 2)}</pre>
-        //             <Typography component="h6" variant="h6" align="center">
-        //                 Uploaded Documents
-        //             </Typography>
-        //             <ul>
-        //                 {
-        //                   onboardingData.documents?.map(doc => (
-        //                     <li key={doc._id}>
-        //                         <a href={doc.url} target="_blank" rel="noopener noreferrer">{doc.type}</a>
-        //                     </li>
-        //                 ))
-        //                 }
-        //             </ul>
-        //         </Paper>
-        //     </Container>
-        // );
         return <PendingOnboarding onboardingData={onboardingData} />;
     }
 
+    const RejectedHeaderAndFeedback = () => (
+        <>
+          <Typography component="h1" variant="h5" align="center" color={red}>
+                Your Application has been Rejected!
+            </Typography>
+            <Typography component="h2" variant="h5" align="center">
+                Please See HR's Feedback Below and Resubmit Your Application.
+            </Typography>
+            <Typography component="h6" variant="h6" align="center">
+                Feedback: {onboardingData.feedback}
+            </Typography>
+        </>
+    );
+
+    const NormalHeader = () => (
+        <Typography component="h1" variant="h5" align="center">
+            Onboarding Application
+        </Typography>
+    );
     return (
       <Container component="main" maxWidth="sm">
           <Paper style={{ padding: '16px', marginTop: '16px' }}>
-              <Typography component="h1" variant="h5" align="center">
+              {/* <Typography component="h1" variant="h5" align="center">
                   {onboardingData && onboardingData.status === 'Rejected' ? 'Edit and Resubmit Your Application' : 'Onboarding Application'}
-              </Typography>
+              </Typography> */}
+              {onboardingData && onboardingData.status === 'Rejected' ? <RejectedHeaderAndFeedback /> : <NormalHeader />}
               {onboardingError && (
                   <Typography color="error" variant="body1" align="center">
                       {onboardingError}

@@ -1,5 +1,6 @@
 const OnboardingApplication = require('../models/OnboardingApplication');
 const Document = require('../models/Document');
+const fs = require('fs');
 
 const unflatten = (data) => {
     const result = {};
