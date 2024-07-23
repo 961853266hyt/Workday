@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute.tsx'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { verifyToken } from './redux/userThunks.ts'
+import PersonalInformation from './pages/PersonalInformation.tsx'
 
 // const initializeAuth = (s:any) => {
 //   const token = localStorage.getItem('token')
@@ -41,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="onboarding" element={<OnboardingApplication />} />
             <Route path="test-theme" element={<TestTheme />} />
             <Route path="visa-status" element={<VisaStatusManagement />} />
+            <Route path="personal-information" element={<PersonalInformation />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -20,7 +20,7 @@ interface PendingOnboardingProps {
 const ignoredFields = ['_id', 'status', 'documents', '__v', 'userId', 'createdAt', 'updatedAt', 
     'profilePicture','optReceipt', 'submissionDate']; 
 
-const getFileUrl = (url: string) => {
+export const getFileUrl = (url: string) => {
     const filename  = url.split('/').slice(-1)[0];
     return 'http://localhost:8000/uploads/' + filename;
 };
