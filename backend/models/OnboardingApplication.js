@@ -13,7 +13,8 @@ const OnboardingApplicationSchema = new Schema({
     lastName: { type: String, required: true },
     middleName: { type: String },
     preferredName: { type: String },
-    profilePicture: { type: String },
+    //profilePicture: { type: String },
+    profilePicture: { type: Schema.Types.ObjectId, ref: 'Document' },
     currentAddress: {
       building: { type: String },
       street: { type: String },

@@ -6,7 +6,7 @@ const DocumentSchema = new Schema({
     type: { type: String, enum:['optReceipt', 'I-20', 'DL', 'profilePicture'], required: true },
     url: { type: String, required: true },
     uploadedAt: { type: Date, default: Date.now },
-    status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
+    status: { type: String, enum: ['Pending', 'Approved', 'Rejected', 'NONE'], required: true },
     feedback: { type: String }
   });
 

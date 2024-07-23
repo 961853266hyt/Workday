@@ -33,7 +33,15 @@ const createNewOnboardingApplication = async (req, res) => {
         const optReceipt = req.files['workAuthorization.optReceipt'] ? req.files['workAuthorization.optReceipt'][0] : null;
 
         if (profilePicture) {
-            parsedFormData.profilePicture = profilePicture.path;
+            //parsedFormData.profilePicture = profilePicture.path;
+            const profilePictureDoc = new Document({
+                userId: parsedFormData.userId,
+                type: 'profilePicture',
+                url: profilePicture.path,
+                status: 'NONE'
+            });
+            await profilePictureDoc.save();
+            parsedFormData.profilePicture = profilePictureDoc._id;
         }
         //documents = [];
         if (optReceipt) {
@@ -129,11 +137,29 @@ const updateOnboardingApplicationByUserId = async (req, res) => {
         const optReceipt = req.files['workAuthorization.optReceipt'] ? req.files['workAuthorization.optReceipt'][0] : null;
 
         if (profilePicture) {
-            parsedFormData.profilePicture = profilePicture.path;
+            //parsedFormData.profilePicture = profilePicture.path;
             // replace the old profile picture with the new one
+            // if (application.profilePicture) {
+            //     await fs.unlink(application.profilePicture);
+            //     console.log('Old profile picture deleted: ', application.profilePicture);
+            // }
+            const profilePictureDoc = new Document({
+                userId: parsedFormData.userId,
+                type: 'profilePicture',
+                url: profilePicture.path,
+                status: 'NONE'
+            });
+            await profilePictureDoc.save();
+            parsedFormData.profilePicture = profilePictureDoc._id;
+
             if (application.profilePicture) {
-                await fs.unlink(application.profilePicture);
-                console.log('Old profile picture deleted: ', application.profilePicture);
+                const oldProfilePictureDoc = await Document.findById(application
+                    .profilePicture);
+                // delete the old profile picture document
+                await Document.deleteOne({ _id: oldProfilePictureDoc._id });
+                await fs.unlink(oldProfilePictureDoc.url);
+                console.log('Old profile picture deleted: ', oldProfilePictureDoc.url);
+
             }
         }
         //documents = [];
