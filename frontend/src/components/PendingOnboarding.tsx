@@ -18,7 +18,7 @@ interface PendingOnboardingProps {
 }
 
 const ignoredFields = ['_id', 'status', 'documents', '__v', 'userId', 'createdAt', 'updatedAt', 
-    'profilePicture','workAuthorization.optReceipt', 'submissionDate']; 
+    'profilePicture','optReceipt', 'submissionDate']; 
 
 const getFileUrl = (url: string) => {
     const filename  = url.split('/').slice(-1)[0];
@@ -27,16 +27,17 @@ const getFileUrl = (url: string) => {
 
 const renderTableRows = (key: string, value: any) => {
     if (typeof value === 'object' && !Array.isArray(value)) {
-        return Object.entries(value).map(([subKey, subValue]) => (
+        return Object.entries(value).filter(([key]) => !ignoredFields.includes(key)).map(([subKey, subValue]) => (
             <TableRow key={`${key}.${subKey}`}>
-                <TableCell>{`${subKey}`}</TableCell>
+                <TableCell>{`${key} ${subKey}`}</TableCell>
                 <TableCell>{typeof subValue === 'object' ? renderTableRows(subKey, subValue) : subValue}</TableCell>
             </TableRow>
         ));
     } else if (Array.isArray(value)) {
-        return value.map((item, index) => (
-            <TableRow key={`${key}[${index}]`}>
-                <TableCell>{`${key}[${index}]`}</TableCell>
+        return value.
+        map((item, index) => (
+            <TableRow key={`${key} ${index + 1}`}>
+                <TableCell>{`${key} ${index + 1}`}</TableCell>
                 <TableCell>{typeof item === 'object' ? renderTableRows(`${key}`, item) : item}</TableCell>
             </TableRow>
         ));
@@ -46,7 +47,7 @@ const renderTableRows = (key: string, value: any) => {
                 <TableCell>{key}</TableCell>
                 <TableCell>{value}</TableCell>
             </TableRow>
-        );
+        )
     }
 };
 
