@@ -31,14 +31,48 @@ export const submitOnboardingApplication:AsyncThunk< any, FormData, {} > = creat
   }
 );
 
-export const fetchOnboardingStatus:AsyncThunk<any, string, {}> = createAsyncThunk('onboarding/fetchStatus', async (userId: string, thunkAPI) => {
-  try {
+export const fetchOnboardingApplication:AsyncThunk<any, string, {}> = createAsyncThunk(
+  'onboarding/fetchData', 
+  async (userId: string, thunkAPI) => {
+   try {
     const response = await axios.get(`${API_URL}/onboarding/user/${userId}`);
+    // 
+    // fetch file 
+    const documents = await axios.get(`${API_URL}/documents/user/${userId}`);
+    response.data.documents = documents.data;
     return response.data;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data);
   }
 }
+);
+
+export const updateOnboardingApplication:AsyncThunk<any, FormData, {}> = createAsyncThunk(
+  'onboarding/update',
+  async (formData, thunkAPI) => {
+    try {
+      const userId = formData.get('userId');
+      const response = await axios.put(`${API_URL}/onboarding/user/${userId}`, formData);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const fetchDocuments:AsyncThunk<any, string, {}> = createAsyncThunk(
+  'onboarding/fetchDocuments',
+  async (userId: string, thunkAPI) => {
+    try {
+      const response = await axios.get(`${API_URL}/onboarding/documents/user/${userId}`);
+      if (response.data.length === 0) { // if no documents are uploaded
+        return null;
+      }
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
 );
 
 const onboardingSlice = createSlice({
@@ -64,6 +98,31 @@ const onboardingSlice = createSlice({
       .addCase(submitOnboardingApplication.rejected, (state, action: PayloadAction<any>) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      .addCase(fetchOnboardingApplication.pending, (state) => {
+        state.status = 'loading';
+      }
+      )
+      .addCase(fetchOnboardingApplication.fulfilled, (state, action: PayloadAction<any>) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchOnboardingApplication.rejected, (state, action: PayloadAction<any>) => {
+        state.status = 'failed';
+        state.error = action.payload;
+      })
+      .addCase(updateOnboardingApplication.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateOnboardingApplication.fulfilled, (state, action: PayloadAction<any>) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(updateOnboardingApplication.rejected, (state, action: PayloadAction<any>) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
   },
 });
@@ -71,5 +130,6 @@ const onboardingSlice = createSlice({
 export const selectOnboardingData = (state: RootState) => state.onboarding.data;
 export const selectOnboardingStatus = (state: RootState) => state.onboarding.status;
 export const selectOnboardingError = (state: RootState) => state.onboarding.error;
+
 
 export default onboardingSlice.reducer;

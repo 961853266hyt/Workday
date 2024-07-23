@@ -12,6 +12,6 @@ const documentRouter = express.Router();
 documentRouter.post('/upload', upload.single('file'), uploadFile);
 documentRouter.get('/:id', getDocumentById);
 documentRouter.patch('/:id', updateDocumentById);
-documentRouter.get('/', getDocumentsByUserId);
+documentRouter.get('/user/:id', getDocumentsByUserId);
 
 module.exports = documentRouter;

@@ -20,7 +20,7 @@ const uploadFile = async (req, res) => {
 
 const getDocumentsByUserId = async (req, res) => {
     try {
-        const documents = await Document.find({ userId: req.user.id });
+        const documents = await Document.find({ userId: req.params.id });
         res.json(documents);
     } catch (err) {
         res.status(500).json({ message: err.message });
