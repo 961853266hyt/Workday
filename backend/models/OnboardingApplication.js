@@ -52,7 +52,7 @@ const OnboardingApplicationSchema = new Schema({
       email: { type: String },
       relationship: { type: String }
     }],
-    documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }],
+    //documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }],
     visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' }
   });
   

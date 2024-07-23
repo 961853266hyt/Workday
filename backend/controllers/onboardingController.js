@@ -1,6 +1,6 @@
 const OnboardingApplication = require('../models/OnboardingApplication');
 const Document = require('../models/Document');
-const fs = require('fs');
+const fs = require('fs/promises');
 
 const unflatten = (data) => {
     const result = {};
@@ -35,7 +35,7 @@ const createNewOnboardingApplication = async (req, res) => {
         if (profilePicture) {
             parsedFormData.profilePicture = profilePicture.path;
         }
-        documents = [];
+        //documents = [];
         if (optReceipt) {
         const optReceiptDoc = new Document({
             userId: parsedFormData.userId,
@@ -45,13 +45,13 @@ const createNewOnboardingApplication = async (req, res) => {
         });
         await optReceiptDoc.save();
         parsedFormData.workAuthorization.optReceipt = optReceiptDoc._id;
-        documents.push(optReceiptDoc);
+        //documents.push(optReceiptDoc);
         }
 
         const onboardingApp = new OnboardingApplication({
         ...parsedFormData,
         userId: parsedFormData.userId,
-        documents,
+        //documents,
         });
         await onboardingApp.save();
         res.status(201).json({ message: 'Onboarding application submitted successfully' });
@@ -132,11 +132,11 @@ const updateOnboardingApplicationByUserId = async (req, res) => {
             parsedFormData.profilePicture = profilePicture.path;
             // replace the old profile picture with the new one
             if (application.profilePicture) {
-                fs.unlinkSync(application.profilePicture);
+                await fs.unlink(application.profilePicture);
                 console.log('Old profile picture deleted: ', application.profilePicture);
             }
         }
-        documents = [];
+        //documents = [];
 
         if (optReceipt) {
             const optReceiptDoc = new Document({
@@ -147,20 +147,21 @@ const updateOnboardingApplicationByUserId = async (req, res) => {
             });
             await optReceiptDoc.save();
             parsedFormData.workAuthorization.optReceipt = optReceiptDoc._id;
-            documents.push(optReceiptDoc);
+            //documents.push(optReceiptDoc);
             // replace the old optReceipt with the new one
             if (application.workAuthorization.optReceipt) {
                 const oldOptReceiptDoc = await Document.findById(application
                     .workAuthorization.optReceipt);
-                fs.unlinkSync(oldOptReceiptDoc.url);
+                
                 // delete the old optReceipt document
-                await oldOptReceiptDoc.remove();
-                documents = documents.filter(doc => doc._id.toString() !== oldOptReceiptDoc._id.toString()); // remove the old optReceipt from the documents array
+                await Document.deleteOne({ _id: oldOptReceiptDoc._id });
+                await fs.unlink(oldOptReceiptDoc.url);
+                //documents = documents.filter(doc => doc._id.toString() !== oldOptReceiptDoc._id.toString()); // remove the old optReceipt from the documents array
                 console.log('Old optReceipt deleted: ', oldOptReceiptDoc.url);
             }
         }
         application.set(parsedFormData);
-        application.documents = documents;
+        //application.documents = documents;
         application.updatedAt = Date.now();
         application.status = 'Pending';
         await application.save();
