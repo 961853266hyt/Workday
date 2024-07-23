@@ -356,6 +356,7 @@ const PersonalInformation: React.FC = () => {
             onEdit={() => {}}
             onCancel={() => {}}
             onSave={() => {}}
+            hideEditButton={true}
           >
             <Typography component="h6" variant="h6" align="center">
               Uploaded Documents
@@ -415,7 +416,8 @@ const PersonalInformation: React.FC = () => {
     onCancel: () => void;
     onSave: () => void;
     children: React.ReactNode;
-  }> = ({ title, editable, onEdit, onCancel, onSave, children }) => {
+    hideEditButton?: boolean;
+  }> = ({ title, editable, onEdit, onCancel, onSave, children, hideEditButton }) => {
     return (
       <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>
         <Typography component="h6" variant="h6" align="center">
@@ -434,9 +436,9 @@ const PersonalInformation: React.FC = () => {
         ) : (
           <>
             {children}
-            <Button onClick={onEdit} color="primary">
+            {!hideEditButton && (<Button onClick={onEdit} color="primary">
               Edit
-            </Button>
+            </Button>)}
           </>
         )}
       </MuiPaper>
