@@ -153,6 +153,9 @@ const updateOnboardingApplicationByUserId = async (req, res) => {
                 const oldOptReceiptDoc = await Document.findById(application
                     .workAuthorization.optReceipt);
                 fs.unlinkSync(oldOptReceiptDoc.url);
+                // delete the old optReceipt document
+                await oldOptReceiptDoc.remove();
+                documents = documents.filter(doc => doc._id.toString() !== oldOptReceiptDoc._id.toString()); // remove the old optReceipt from the documents array
                 console.log('Old optReceipt deleted: ', oldOptReceiptDoc.url);
             }
         }
