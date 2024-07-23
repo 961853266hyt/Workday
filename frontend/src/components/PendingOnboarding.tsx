@@ -17,7 +17,8 @@ interface PendingOnboardingProps {
     onboardingData: OnboardingData;
 }
 
-const ignoredFields = ['_id', 'status', 'documents', '__v', 'userId', 'createdAt', 'updatedAt', 'profilePicture']; 
+const ignoredFields = ['_id', 'status', 'documents', '__v', 'userId', 'createdAt', 'updatedAt', 
+    'profilePicture','workAuthorization.optReceipt', 'submissionDate']; 
 
 const getFileUrl = (url: string) => {
     const filename  = url.split('/').slice(-1)[0];
@@ -82,7 +83,7 @@ const PendingOnboarding: React.FC<PendingOnboardingProps> = ({ onboardingData })
                         <TableHead>
                             <TableRow>
                                 <TableCell>Document Type</TableCell>
-                                <TableCell>URL</TableCell>
+                                <TableCell>Details</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
