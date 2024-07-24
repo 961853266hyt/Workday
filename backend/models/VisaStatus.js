@@ -3,26 +3,10 @@ const Schema = mongoose.Schema;
 
 const VisaStatusSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    optReceipt: {
-      url: { type: String, required: true },
-      status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
-      feedback: { type: String }
-    },
-    optEAD: {
-      url: { type: String, required: true },
-      status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
-      feedback: { type: String }
-    },
-    i983: {
-      url: { type: String, required: true },
-      status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
-      feedback: { type: String }
-    },
-    i20: {
-      url: { type: String, required: true },
-      status: { type: String, enum: ['Pending', 'Approved', 'Rejected'], required: true },
-      feedback: { type: String }
-    }
+    optReceipt: { type: Schema.Types.ObjectId, ref: 'Document' },
+    optEad: { type: Schema.Types.ObjectId, ref: 'Document' },
+    i983: { type: Schema.Types.ObjectId, ref: 'Document' },
+    i20: { type: Schema.Types.ObjectId, ref: 'Document' },
   });
   
 const VisaStatus = mongoose.model('VisaStatus', VisaStatusSchema);

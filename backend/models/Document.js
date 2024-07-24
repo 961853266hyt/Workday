@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const DocumentSchema = new Schema({
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    type: { type: String, enum:['optReceipt', 'optEad', 'i983', 'I-20', 'DL', 'profilePicture'], required: true },
+    type: { type: String, enum:['optReceipt', 'optEad', 'i983', 'i20', 'DL', 'profilePicture'], required: true },
     url: { type: String, required: true },
     uploadedAt: { type: Date, default: Date.now },
     status: { type: String, enum: ['Pending', 'Approved', 'Rejected', 'NONE'], required: true },
