@@ -22,7 +22,9 @@ import {
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/userSlice';
-import { fetchOnboardingApplication, selectOnboardingData } from '../redux/onboardingSlice';
+import { fetchOnboardingApplication, 
+    selectOnboardingData,
+    updateUserInfo } from '../redux/onboardingSlice';
 import { getFileUrl } from '../components/PendingOnboarding';
 import { formatDate } from './OnboardingApplicationPage';
 
@@ -61,6 +63,15 @@ const PersonalInformation: React.FC = () => {
 
   const handleSave = () => {
     //TODO: Implement the save logic here
+    const updatedData = {
+        ...onboardingData,
+        ...unsavedChanges,
+    };
+    // print the updated data
+    for (const key in updatedData) {
+        console.log(key, updatedData[key]);
+    }
+    dispatch(updateUserInfo(updatedData));
     setEditSection(null);
   };
 

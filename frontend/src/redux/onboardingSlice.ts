@@ -76,6 +76,21 @@ export const fetchDocuments:AsyncThunk<any, string, {}> = createAsyncThunk(
   }
 );
 
+export const updateUserInfo:AsyncThunk<any, any, {}> = createAsyncThunk(
+  'onboarding/updateUserInfo',
+  async (formData, thunkAPI) => {
+    try {
+      const onboardingId = formData.get('_id');
+      // we want to exclude the documents from the form data
+      formData.delete('documents');
+      const response = await axios.put(`${API_URL}/onboarding/${onboardingId}`, formData);
+      return response.data;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 const onboardingSlice = createSlice({
   name: 'onboarding',
   initialState,
@@ -124,7 +139,21 @@ const onboardingSlice = createSlice({
       .addCase(updateOnboardingApplication.rejected, (state, action: PayloadAction<any>) => {
         state.status = 'failed';
         state.error = action.payload;
+      })
+      .addCase(updateUserInfo.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUserInfo.fulfilled, (state, action: PayloadAction<any>) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+        state.error = null;
+      })
+      .addCase(updateUserInfo.rejected, (state, action: PayloadAction<any>) => {
+        state.status = 'failed';
+        state.error = action.payload;
       });
+
+
   },
 });
 
