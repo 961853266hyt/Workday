@@ -62,7 +62,6 @@ const PersonalInformation: React.FC = () => {
   };
 
   const handleSave = () => {
-    //TODO: Implement the save logic here
     const updatedData = {
         ...onboardingData,
         ...unsavedChanges,

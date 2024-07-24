@@ -2,7 +2,7 @@ export interface Document {
     id: string;
     name: string;
     url: string;
-    status: 'Pending' | 'Approved' | 'Rejected';
+    status: 'Pending' | 'Approved' | 'Rejected' | 'NONE';
     feedback?: string;
   }
   
@@ -51,3 +51,4 @@ export interface Document {
   export interface  MyKnownError {
     errorMessage: string
   }
+

@@ -5,6 +5,7 @@ const userRouter = require('./routers/userRouter');
 const authRouter = require('./routers/authRouter');
 const documentRouter = require('./routers/documentRouter');
 const onboardingRouter = require('./routers/onboardingRouter');
+const visaStatusRouter = require('./routers/visaStatusRouter');
 const connectDB = require('./database');
 const port = 8000;
 
@@ -18,7 +19,9 @@ app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/documents', documentRouter);
 app.use('/api/onboarding', onboardingRouter);
+app.use('/api/visa-statuses', visaStatusRouter);
 app.use('/uploads', express.static('uploads')); // dowload url: http://localhost:8000/uploads/filename
+app.use('/downloads', express.static('downloads'));
 
 // Define some fake data
 // const fakeEmployees = [

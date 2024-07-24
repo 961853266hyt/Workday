@@ -1,133 +1,126 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../redux/store';
-import { List, ListItem, Typography, Box, Button, Card, CardContent, CardActions, Divider, Alert } from '@mui/material';
-import { uploadDocument } from '../redux/visaStatusSlice';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Container,
+  Typography,
+  Button,
+  Grid,
+  TextField,
+  Paper as MuiPaper,
+  Link,
+} from "@mui/material";
+import { fetchVisaStatus, 
+  uploadDocument, 
+  selectVisaStatus, 
+  selectVisaStatusError, 
+  selectVisaStatusLoading,
+ } from "../redux/visaStatusSlice";
+import { selectUser } from "../redux/userSlice";
+
+
 
 const EmployeeVisaStatusPage: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch();
-  const employeeId = useSelector((state: RootState) => state.user.user?.id);
-  const employee = useSelector((state: RootState) =>
-    state.visaStatus.employees.find(emp => emp.id === employeeId)
-  );
+  const dispatch = useDispatch();
+  const user = useSelector(selectUser);
+  const visaStatus = useSelector(selectVisaStatus);
+  const loading = useSelector(selectVisaStatusLoading);
+  const error = useSelector(selectVisaStatusError);
+  const [file, setFile] = useState<File | null>(null);
+  const [documentType, setDocumentType] = useState<string>("");
 
-  if (!employee || employee.workAuthorization.visaType !== 'OPT') return <Alert severity="info">No relevant data found.</Alert>;
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchVisaStatus(user.id));
+    }
+  }, [user, dispatch]);
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>, docType: string) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
-      dispatch(uploadDocument({ employeeId: employee.id, docType, file }));
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setFile(event.target.files[0]);
     }
   };
 
-  const renderDocumentStatus = (docType: string, docStatus: 'Pending' | 'Approved' | 'Rejected', feedback: string) => {
-    switch (docType) {
-      case 'OPT Receipt':
-        if (docStatus === 'Pending') {
-          return <Alert severity="info">Waiting for HR to approve your OPT Receipt</Alert>;
-        } else if (docStatus === 'Approved') {
-          return <Alert severity="success">Please upload a copy of your OPT EAD</Alert>;
-        } else if (docStatus === 'Rejected') {
-          return <Alert severity="error">HR Feedback: {feedback}</Alert>;
-        }
-        break;
-      case 'OPT EAD':
-        if (docStatus === 'Pending') {
-          return <Alert severity="info">Waiting for HR to approve your OPT EAD</Alert>;
-        } else if (docStatus === 'Approved') {
-          return <Alert severity="success">Please download and fill out the I-983 form</Alert>;
-        } else if (docStatus === 'Rejected') {
-          return <Alert severity="error">HR Feedback: {feedback}</Alert>;
-        }
-        break;
-      case 'I-983':
-        if (docStatus === 'Pending') {
-          return <Alert severity="info">Waiting for HR to approve and sign your I-983</Alert>;
-        } else if (docStatus === 'Approved') {
-          return <Alert severity="success">Please send the I-983 along with all necessary documents to your school and upload the new I-20</Alert>;
-        } else if (docStatus === 'Rejected') {
-          return <Alert severity="error">HR Feedback: {feedback}</Alert>;
-        }
-        break;
-      case 'I-20':
-        if (docStatus === 'Pending') {
-          return <Alert severity="info">Waiting for HR to approve your I-20</Alert>;
-        } else if (docStatus === 'Approved') {
-          return <Alert severity="success">All documents have been approved</Alert>;
-        } else if (docStatus === 'Rejected') {
-          return <Alert severity="error">HR Feedback: {feedback}</Alert>;
-        }
-        break;
-      default:
-        return null;
+  const handleUpload = (type: string) => {
+    if (file && user) {
+      dispatch(uploadDocument({ userId: user.id, type, file }));
+      setFile(null); // Clear the file input
+      setDocumentType(""); // Reset document type
     }
   };
 
-  const renderUploadButton = (docType: string, docStatus: 'Pending' | 'Approved' | 'Rejected', prevDocStatus: 'Pending' | 'Approved' | 'Rejected') => {
-    if (prevDocStatus === 'Approved' && docStatus !== 'Approved' && docStatus !== 'Pending') {
-      return (
-        <Button variant="outlined" component="label">
-          Upload {docType}
-          <input type="file" hidden onChange={(event) => handleFileUpload(event, docType)} />
-        </Button>
-      );
-    }
-    return null;
-  };
-
-  const prevDocStatus = (docType: string) => {
-    switch (docType) {
-      case 'OPT EAD':
-        return employee.onboardingApplication?.documents.find(doc => doc.name === 'OPT Receipt')?.status || 'Pending';
-      case 'I-983':
-        return employee.onboardingApplication?.documents.find(doc => doc.name === 'OPT EAD')?.status || 'Pending';
-      case 'I-20':
-        return employee.onboardingApplication?.documents.find(doc => doc.name === 'I-983')?.status || 'Pending';
-      default:
-        return 'Approved';
-    }
+  const renderUploadSection = (label: string, type: string, status?: string, feedback?: string) => {
+    return (
+      <Grid item xs={12}>
+        <Typography variant="h6">{label}</Typography>
+        {status === "Pending" && <Typography color="textSecondary">Waiting for HR to approve your {label}</Typography>}
+        {status === "Approved" && 
+        (label==="I-20"?<Typography color="textSecondary">I-20 approved! All documents have been approved</Typography>
+        :<Typography color="textSecondary">Please upload the next document</Typography>)}
+        {status === "Rejected" && (
+          <>
+            {label === "I-983" && 
+            <>
+              <Typography variant="h6">Please download and fill out the I-983 form</Typography>
+                <Link href="http://localhost:8000/downloads/Sample-i-983.pdf" target="_blank" rel="noopener noreferrer">Empty Template</Link>
+                <br />
+                <Link href="http://localhost:8000/downloads/Sample-i-983.pdf" target="_blank" rel="noopener noreferrer">Sample Template</Link>
+                <br />
+            </>}
+            <Typography color="error">Rejected: {feedback}</Typography>
+            <input type="file" onChange={handleFileChange} />
+            <Button
+              onClick={() => handleUpload(type)}
+              variant="contained"
+              color="primary"
+              disabled={!file}
+            >
+              Upload {label}
+            </Button>
+          </>
+        )}
+        {!status && (
+          <>
+            {label === "I-983" && 
+            <>
+              <Typography variant="h6">Please download and fill out the I-983 form</Typography>
+                <Link href="http://localhost:8000/downloads/Sample-i-983.pdf" target="_blank" rel="noopener noreferrer">Empty Template</Link>
+                <br />
+                <Link href="http://localhost:8000/downloads/Sample-i-983.pdf" target="_blank" rel="noopener noreferrer">Sample Template</Link>
+                <br />
+            </>}
+            <input type="file" onChange={handleFileChange} />
+            <Button
+              onClick={() => handleUpload(type)}
+              variant="contained"
+              color="primary"
+              disabled={!file}
+            >
+              Upload {label}
+            </Button>
+          </>
+        )}
+      </Grid>
+    );
   };
 
   return (
-    <Box sx={{ padding: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Visa Status
-      </Typography>
-      <Card sx={{ marginBottom: 2 }}>
-        <CardContent>
-          <Typography variant="h6">{employee.name}</Typography>
-          <Typography variant="body1">{employee.workAuthorization.title}</Typography>
-          <Typography variant="body2">Start Date: {new Date(employee.workAuthorization.startDate).toLocaleDateString()}</Typography>
-          <Typography variant="body2">End Date: {new Date(employee.workAuthorization.endDate).toLocaleDateString()}</Typography>
-          <Typography variant="body2">Days Remaining: {employee.daysRemaining}</Typography>
-          <Typography variant="body2">Next Step: {employee.nextStep}</Typography>
-        </CardContent>
-      </Card>
-      
-      <List>
-        {employee.onboardingApplication?.documents.map(doc => (
-          <ListItem key={doc.id}>
-            <Card sx={{ width: '100%', marginBottom: 2 }}>
-              <CardContent>
-                <Typography variant="h6">{doc.name}</Typography>
-                {renderDocumentStatus(doc.name, doc.status, doc.feedback || '')}
-                {doc.url && <Button href={doc.url} target="_blank" rel="noopener noreferrer">View Document</Button>}
-                {doc.name === 'I-983' && (
-                  <Box sx={{ marginTop: 2 }}>
-                    <Typography variant="body2">Download Templates:</Typography>
-                    <Button href="/path/to/empty-template.pdf" target="_blank" rel="noopener noreferrer">Empty Template</Button>
-                    <Button href="/path/to/sample-template.pdf" target="_blank" rel="noopener noreferrer">Sample Template</Button>
-                  </Box>
-                )}
-              </CardContent>
-              <CardActions>
-                {renderUploadButton(doc.name, doc.status, prevDocStatus(doc.name))}
-              </CardActions>
-            </Card>
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+    <Container component="main" maxWidth="md">
+      <MuiPaper style={{ padding: "16px", marginTop: "16px" }}>
+        <Typography component="h1" variant="h5" align="center">
+          Visa Status Management
+        </Typography>
+        {loading && <Typography>Loading...</Typography>}
+        {error && <Typography color="error">{error}</Typography>}
+        {visaStatus && (
+          <Grid container spacing={2}>
+            {renderUploadSection("OPT Receipt", "optReceipt", visaStatus.optReceipt?.status, visaStatus.optReceipt?.feedback)}
+            {visaStatus.optReceipt?.status === "Approved" && renderUploadSection("OPT EAD", "optEad", visaStatus.optEad?.status, visaStatus.optEad?.feedback)}
+            {visaStatus.optEad?.status === "Approved" && renderUploadSection("I-983", "i983", visaStatus.i983?.status, visaStatus.i983?.feedback)}
+            {visaStatus.i983?.status === "Approved" && renderUploadSection("I-20", "i20", visaStatus.i20?.status, visaStatus.i20?.feedback)}
+          </Grid>
+        )}
+      </MuiPaper>
+    </Container>
   );
 };
 

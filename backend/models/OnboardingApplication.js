@@ -54,7 +54,7 @@ const OnboardingApplicationSchema = new Schema({
       relationship: { type: String }
     }],
     //documents: [{ type: Schema.Types.ObjectId, ref: 'Document' }],
-    visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' }
+    //visaStatus: { type: Schema.Types.ObjectId, ref: 'VisaStatus' }
   });
   
 const OnboardingApplication = mongoose.model('OnboardingApplication', OnboardingApplicationSchema);

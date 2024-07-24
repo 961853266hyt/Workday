@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Typography, Tabs, Tab, Box } from '@mui/material';
-import VisaStatusList from '../components/VisaStatusList';
+//import VisaStatusList from '../components/VisaStatusList';
 
 const HRVisaStatusPage: React.FC = () => {
   const [tabIndex, setTabIndex] = React.useState(0);
@@ -11,7 +11,7 @@ const HRVisaStatusPage: React.FC = () => {
 
   return (
     <Container>
-      <Typography variant="h4" component="h1" gutterBottom>
+      {/* <Typography variant="h4" component="h1" gutterBottom>
         Visa Status Management
       </Typography>
       <Tabs value={tabIndex} onChange={handleTabChange}>
@@ -23,7 +23,7 @@ const HRVisaStatusPage: React.FC = () => {
       </Box>
       <Box hidden={tabIndex !== 1}>
         <VisaStatusList status="All" />
-      </Box>
+      </Box> */}
     </Container>
   );
 };

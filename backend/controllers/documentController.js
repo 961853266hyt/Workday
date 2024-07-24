@@ -5,16 +5,17 @@ const uploadFile = async (req, res) => {
         if (!req.file) {
             return res.status(400).json({ message: 'Please upload a file' });
         }
+        console.log(req.file);
+        console.log(req.body);
         const document = new Document({
-            userId: req.user.id,
-            type: req.body.type,
             url: req.file.path,
-            status: 'Pending',
+            ...req.body
         });
         await document.save();
-        res.status(201).json({ document });
+        res.status(201).json(document);
     } catch (error) {
         res.status(500).json({ message: 'File upload failed', error });
+        console.log(error.message);
     }
 }
 

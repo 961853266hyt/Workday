@@ -65,7 +65,7 @@ export const fetchDocuments:AsyncThunk<any, string, {}> = createAsyncThunk(
   'onboarding/fetchDocuments',
   async (userId: string, thunkAPI) => {
     try {
-      const response = await axios.get(`${API_URL}/onboarding/documents/user/${userId}`);
+      const response = await axios.get(`${API_URL}/documents/user/${userId}`);
       if (response.data.length === 0) { // if no documents are uploaded
         return null;
       }

@@ -11,7 +11,7 @@ import { fetchOnboardingApplication,
   selectOnboardingStatus, 
   selectOnboardingError, 
   updateOnboardingApplication,
-  fetchDocuments } from '../redux/onboardingSlice';
+ } from '../redux/onboardingSlice';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { format } from 'date-fns';
