@@ -20,9 +20,9 @@ import {
   TableBody,
   Link,
 } from '@mui/material';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/userSlice';
-import { selectOnboardingData } from '../redux/onboardingSlice';
+import { fetchOnboardingApplication, selectOnboardingData } from '../redux/onboardingSlice';
 import { getFileUrl } from '../components/PendingOnboarding';
 import { formatDate } from './OnboardingApplicationPage';
 
@@ -32,6 +32,7 @@ const PersonalInformation: React.FC = () => {
   const [editSection, setEditSection] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState<any>({});
+  const dispatch = useDispatch();
   
   const printOnboardingData = () => {
     for (const key in onboardingData) {
@@ -39,9 +40,15 @@ const PersonalInformation: React.FC = () => {
     }
     };
 
+//   useEffect(() => {
+//         printOnboardingData();
+//   }, [onboardingData]);
     useEffect(() => {
-        printOnboardingData();
-        }, [onboardingData]);
+    if (user) {
+        console.log(user.id);
+        dispatch(fetchOnboardingApplication(user.id));
+    }
+    }, [user, dispatch]);
 
   const handleEdit = (section: string) => {
     setEditSection(section);
@@ -122,14 +129,7 @@ const PersonalInformation: React.FC = () => {
                 onChange={(e) => handleChange('Name', 'preferredName', e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <Input
-                type="file"
-                disabled={editSection !== 'Name'}
-                // Add file change logic here
-              />
-            </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Email"
                 value={user?.email}
@@ -154,7 +154,7 @@ const PersonalInformation: React.FC = () => {
                 InputLabelProps={{ shrink: true }}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Gender"
                 value={unsavedChanges.Name?.gender || onboardingData.gender}
@@ -182,7 +182,7 @@ const PersonalInformation: React.FC = () => {
                 onChange={(e) => handleChange('Address', 'building', e.target.value)}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 label="Street Name"
                 value={unsavedChanges.Address?.street || onboardingData.currentAddress.street}
