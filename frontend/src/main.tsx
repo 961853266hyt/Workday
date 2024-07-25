@@ -17,6 +17,7 @@ import { store } from './redux/store'
 import { verifyToken } from './redux/userThunks.ts'
 import PersonalInformation from './pages/PersonalInformation.tsx'
 import EmployeeProfilesPage from './pages/EmployeeProfilesPage.tsx'
+import EmployeeProfile from './components/EmployeeProfile.tsx'
 
 // const initializeAuth = (s:any) => {
 //   const token = localStorage.getItem('token')
@@ -45,6 +46,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="visa-status" element={<VisaStatusManagement />} />
             <Route path="personal-information" element={<PersonalInformation />} />
             <Route path='employee-profiles' element={<EmployeeProfilesPage />} />
+            <Route path="/employee/:id" element={<EmployeeProfile />} />
           </Route>
         </Routes>
       </BrowserRouter>

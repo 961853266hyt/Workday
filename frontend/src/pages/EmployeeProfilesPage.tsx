@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Typography, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper as MuiPaper, Link } from '@mui/material';
 import { fetchAllEmployees, selectAllEmployees} from '../redux/userSlice';
 import { RootState } from '../redux/store';
+import { Link as RouterLink } from 'react-router-dom';
 
 const EmployeeProfilesPage: React.FC = () => {
     const dispatch = useDispatch();
@@ -55,7 +56,13 @@ const EmployeeProfilesPage: React.FC = () => {
                                 <TableRow key={employee._id}>
                                     <TableCell>{employee.username}</TableCell>
                                     <TableCell>
-                                        <Link href={`/employee/${employee.id}`} target="_blank" rel="noopener noreferrer">
+                                    <Link
+                                            component={RouterLink}
+                                            to={`/employee/${employee._id}`}
+                                            state={{ employee }}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
                                             {employee.onboardingApplication?.firstName} {employee.onboardingApplication?.lastName}
                                         </Link>
                                     </TableCell>

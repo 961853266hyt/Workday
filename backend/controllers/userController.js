@@ -122,6 +122,21 @@ const fetchAllEmployees = async (req, res) => {
     }
 }
 
+const fetchEmployeeById = async (req, res) => {
+    try {
+        const employee = await User.findById(req.params.id).lean();  
+        const onboardingApplication = await OnboardingApplication.findOne({ userId: employee._id }).lean();
+        // we want the url of profile picture to be included in the response
+        const pl =  await Document.findById(onboardingApplication.profilePicture);
+        const result = { ...employee, onboardingApplication: {...onboardingApplication, profilePicture:pl.url } }
+        //console.log(result);
+        res.json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: err.message });
+    }
+}
+
 
 module.exports = {
     createUser,
@@ -130,5 +145,6 @@ module.exports = {
     getAllUsers,
     fetchUserById,
     updateUserById,
-    fetchAllEmployees
+    fetchAllEmployees,
+    fetchEmployeeById
 };
