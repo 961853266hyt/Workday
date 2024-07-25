@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const Document = require('../models/Document');
+const OnboardingApplication = require('../models/OnboardingApplication');
 
 const createUser = async (req, res) => {
     const { username, email, password, role } = req.body;
@@ -99,6 +100,27 @@ const updateUserById = async (req, res) => {
     }
 }
 
+const fetchAllEmployees = async (req, res) => {
+    try {
+        const employees = await User.find({ role: 'EMP' }).lean();
+
+        const employeeIds = employees.map(employee => employee._id);
+        const onboardingApplications = await OnboardingApplication.find({ userId: { $in: employeeIds } });
+        //console.log(onboardingApplications);
+        const employeesWithApplications = employees.map(employee => {
+            const onboardingApplication = onboardingApplications.find(app => app.userId.equals(employee._id));
+            return {
+                ...employee,
+                onboardingApplication: onboardingApplication || null
+            };
+        });
+        //console.log(employeesWithApplications);
+        res.json(employeesWithApplications);
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: err.message });
+    }
+}
 
 
 module.exports = {
@@ -108,4 +130,5 @@ module.exports = {
     getAllUsers,
     fetchUserById,
     updateUserById,
+    fetchAllEmployees
 };
