@@ -19,11 +19,14 @@ import {
   TableRow,
   TableBody,
   Link,
+  CircularProgress,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectUser } from '../redux/userSlice';
 import { fetchOnboardingApplication, 
     selectOnboardingData,
+    selectOnboardingStatus,
+    selectOnboardingError,
     updateUserInfo } from '../redux/onboardingSlice';
 import { getFileUrl } from '../components/PendingOnboarding';
 import { formatDate } from './OnboardingApplicationPage';
@@ -31,6 +34,8 @@ import { formatDate } from './OnboardingApplicationPage';
 const PersonalInformation: React.FC = () => {
   const user = useSelector(selectUser);
   const onboardingData = useSelector(selectOnboardingData);
+  const status = useSelector(selectOnboardingStatus);
+  const error = useSelector(selectOnboardingError);
   const [editSection, setEditSection] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [unsavedChanges, setUnsavedChanges] = useState<any>({});
@@ -48,7 +53,10 @@ const PersonalInformation: React.FC = () => {
     useEffect(() => {
     if (user) {
         console.log(user.id);
+        printOnboardingData();
         dispatch(fetchOnboardingApplication(user.id));
+    } else {
+        console.log('User not found');
     }
     }, [user, dispatch]);
 
@@ -90,7 +98,16 @@ const PersonalInformation: React.FC = () => {
       },
     }));
   };
+  if (status === 'loading') {
+    return <CircularProgress />;
+  }
 
+  if (error) {
+    return <Typography>Error: {error}</Typography>;
+  }
+  if (!onboardingData) {
+    return <Typography>No onboarding data found</Typography>;
+  }
   return (
     <Container component="main" maxWidth="md">
       <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>

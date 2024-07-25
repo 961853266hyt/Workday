@@ -29,10 +29,10 @@
 // };
 
 // export default HRVisaStatusPage;
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllVisaStatuses, selectVisaStatuses, selectVisaStatusLoading, selectVisaStatusError, VisaStatus,approveDocument, rejectDocument } from '../redux/visaStatusSlice';
-import { Container, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper as MuiPaper, Button, Link } from '@mui/material';
+import { Container, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper as MuiPaper, Button, Link, Tabs, Tab, TextField } from '@mui/material';
 import e from 'cors';
 
 import {  fetchOnboardingApplication} from '../redux/onboardingSlice';
@@ -44,6 +44,8 @@ const HRVisaStatusPage: React.FC = () => {
   const visaStatuses = useSelector(selectVisaStatuses);
   const loading = useSelector(selectVisaStatusLoading);
   const error = useSelector(selectVisaStatusError);
+  const [tabIndex, setTabIndex] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     dispatch(fetchAllVisaStatuses());
@@ -141,13 +143,84 @@ const HRVisaStatusPage: React.FC = () => {
     return 'N/A';
   };
 
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setTabIndex(newValue);
+  };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredVisaStatuses = visaStatuses?.filter(status => {
+    const user = status.userId;
+    const onboardingApp = status.onboardingApplication;
+    const fullName = onboardingApp ? `${onboardingApp.firstName} ${onboardingApp.lastName}` : user.username;
+    return fullName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
+
+  // return (
+  //   <Container component="main" maxWidth="md">
+  //     <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>
+  //       <Typography component="h1" variant="h5" align="center">
+  //         Visa Status Management
+  //       </Typography>
+  //       <TableContainer component={MuiPaper}>
+  //         <Table>
+  //           <TableHead>
+  //             <TableRow>
+  //               <TableCell>Name</TableCell>
+  //               <TableCell>Work Authorization Title</TableCell>
+  //               <TableCell>Start Date</TableCell>
+  //               <TableCell>End Date</TableCell>
+  //               <TableCell>Number of Days Remaining</TableCell>
+  //               <TableCell>Next Steps</TableCell>
+  //               <TableCell>Action</TableCell>
+  //             </TableRow>
+  //           </TableHead>
+  //           <TableBody>
+  //             {visaStatuses?.map((status) => {
+  //               const user = status.userId;
+  //               const workAuth = status.onboardingApplication.workAuthorization;
+  //               const startDate = workAuth?.startDate;
+  //               const endDate = workAuth?.endDate;
+  //               const daysRemaining = endDate ? calculateDaysRemaining(endDate) : 'N/A';
+
+  //               return (
+  //                 <TableRow key={user._id}>
+  //                   <TableCell>{user.username}</TableCell>
+  //                   <TableCell>{workAuth.visaType || 'N/A'}</TableCell>
+  //                   <TableCell>{startDate || 'N/A'}</TableCell>
+  //                   <TableCell>{endDate || 'N/A'}</TableCell>
+  //                   <TableCell>{daysRemaining}</TableCell>
+  //                   <TableCell>{renderNextStep(status)}</TableCell>
+  //                   <TableCell>{renderAction(status)}</TableCell>
+  //                 </TableRow>
+  //               );
+  //             })}
+  //           </TableBody>
+  //         </Table>
+  //       </TableContainer>
+  //     </MuiPaper>
+  //   </Container>
+  // );
   return (
     <Container component="main" maxWidth="md">
       <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>
         <Typography component="h1" variant="h5" align="center">
           Visa Status Management
         </Typography>
+        <Tabs value={tabIndex} onChange={handleTabChange}>
+          <Tab label="In Progress" />
+          <Tab label="All" />
+        </Tabs>
+        <TextField
+          label="Search Employees"
+          variant="outlined"
+          fullWidth
+          value={searchQuery}
+          onChange={handleSearchChange}
+          style={{ marginBottom: '16px' }}
+        />
         <TableContainer component={MuiPaper}>
           <Table>
             <TableHead>
@@ -158,26 +231,27 @@ const HRVisaStatusPage: React.FC = () => {
                 <TableCell>End Date</TableCell>
                 <TableCell>Number of Days Remaining</TableCell>
                 <TableCell>Next Steps</TableCell>
-                <TableCell>Action</TableCell>
+                {tabIndex === 0 && <TableCell>Action</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
-              {visaStatuses?.map((status) => {
+              {filteredVisaStatuses?.map((status) => {
                 const user = status.userId;
-                const workAuth = status.onboardingApplication.workAuthorization;
+                const onboardingApp = status.onboardingApplication;
+                const workAuth = onboardingApp?.workAuthorization;
                 const startDate = workAuth?.startDate;
                 const endDate = workAuth?.endDate;
                 const daysRemaining = endDate ? calculateDaysRemaining(endDate) : 'N/A';
 
                 return (
                   <TableRow key={user._id}>
-                    <TableCell>{user.username}</TableCell>
-                    <TableCell>{workAuth.visaType || 'N/A'}</TableCell>
+                    <TableCell>{onboardingApp ? `${onboardingApp.firstName} ${onboardingApp.lastName}` : user.username}</TableCell>
+                    <TableCell>{workAuth?.visaType || 'N/A'}</TableCell>
                     <TableCell>{startDate || 'N/A'}</TableCell>
                     <TableCell>{endDate || 'N/A'}</TableCell>
                     <TableCell>{daysRemaining}</TableCell>
                     <TableCell>{renderNextStep(status)}</TableCell>
-                    <TableCell>{renderAction(status)}</TableCell>
+                    {tabIndex === 0 && <TableCell>{renderAction(status)}</TableCell>}
                   </TableRow>
                 );
               })}
@@ -187,6 +261,7 @@ const HRVisaStatusPage: React.FC = () => {
       </MuiPaper>
     </Container>
   );
+
 };
 
 export default HRVisaStatusPage;
