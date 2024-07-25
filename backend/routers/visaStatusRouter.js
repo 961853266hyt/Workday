@@ -6,7 +6,9 @@ const {
     updateVisaStatusById,
     getVisaStatusByUserId,
     createVisaStatus,
-    updateVisaStatusByUserId
+    updateVisaStatusByUserId,
+    getVisaStatusesInProgress,
+    getAllVisaStatusesByHR
 } = require('../controllers/visaStatusController');
 
 const visaStatusRouter = express.Router();
@@ -18,5 +20,7 @@ visaStatusRouter.get('/user/:userId', getVisaStatusByUserId);
 visaStatusRouter.get('/user/:userId', getVisaStatusByUserId);
 visaStatusRouter.patch('/user/:userId', updateVisaStatusByUserId);
 visaStatusRouter.post('/', createVisaStatus);   
+visaStatusRouter.get('/HR/inProgress', getVisaStatusesInProgress);
+visaStatusRouter.get('/HR/all', getAllVisaStatusesByHR);
 
 module.exports = visaStatusRouter;

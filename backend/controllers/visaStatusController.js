@@ -1,5 +1,6 @@
 const VisaStatus = require('../models/VisaStatus');
 const Document = require('../models/Document');
+const OnboardingApplication = require('../models/OnboardingApplication');
 
 
 const createVisaStatus = async (req, res) => {
@@ -109,6 +110,63 @@ const updateVisaStatusByUserId = async (req, res) => {
     }
 }
 
+// HR
+const getVisaStatusesInProgress = async (req, res) => {
+    try {
+        const visaStatuses = await VisaStatus.find()
+            .populate('userId')
+            .populate('optReceipt')
+            .populate('optEad')
+            .populate('i983')
+            .populate('i20');
+
+        const inProgressVisaStatuses = visaStatuses.filter(status => {
+            return !status.i20 || status.i20.status === 'Pending' || status.i20.status === 'Rejected';
+        });
+
+
+        const inProgressEmployees = await Promise.all(inProgressVisaStatuses.map(async status => {
+            const user = await User.findById(status.userId);
+            const onboardingApplication = await OnboardingApplication.findOne({ userId: status.userId });
+
+            return {
+                ...user.toObject(),
+                onboardingApplication,
+                visaStatus: status
+            };
+        }));
+
+        res.json(inProgressEmployees);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getAllVisaStatusesByHR = async (req, res) => {
+    try {
+        const visaStatuses = await VisaStatus.find()
+            .populate('userId')
+            .populate('optReceipt')
+            .populate('optEad')
+            .populate('i983')
+            .populate('i20');
+        for (let i = 0; i < visaStatuses.length; i++) {
+            const onboardingApplication = await OnboardingApplication.findOne({ userId: visaStatuses[i].userId._id });
+            visaStatuses[i] = {
+                ...visaStatuses[i]._doc,
+                onboardingApplication,
+            };
+        }
+        console.log(visaStatuses);
+        res.json(visaStatuses);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+    
+
+
+
 
 
 module.exports = {
@@ -117,5 +175,7 @@ module.exports = {
     getVisaStatusByUserId,
     updateVisaStatusById,
     createVisaStatus,
-    updateVisaStatusByUserId
+    updateVisaStatusByUserId,
+    getVisaStatusesInProgress,
+    getAllVisaStatusesByHR
 }
