@@ -31,13 +31,14 @@
 // export default HRVisaStatusPage;
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllVisaStatuses, selectVisaStatuses, selectVisaStatusLoading, selectVisaStatusError, VisaStatus,approveDocument, rejectDocument } from '../redux/visaStatusSlice';
+import { fetchAllVisaStatuses, selectVisaStatuses, selectVisaStatusLoading, selectVisaStatusError, VisaStatus,approveDocument, rejectDocument, sendNotification } from '../redux/visaStatusSlice';
 import { Container, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper as MuiPaper, Button, Link, Tabs, Tab, TextField } from '@mui/material';
 import e from 'cors';
 
 import {  fetchOnboardingApplication} from '../redux/onboardingSlice';
 import { getFileUrl } from '../components/PendingOnboarding';
 import { Document } from '../redux/types';
+import { table } from 'console';
 
 const HRVisaStatusPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -49,9 +50,12 @@ const HRVisaStatusPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchAllVisaStatuses());
-
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   console.log(visaStatuses);
+  // }
+  // , [visaStatuses]);
 
   if (loading) {
     return <CircularProgress />;
@@ -99,8 +103,11 @@ const HRVisaStatusPage: React.FC = () => {
   };
 
   const renderAction = (status: VisaStatus) => {
-    const handleSendNotification = (userId: string) => {
-      //dispatch(sendNotification({ userId }));
+    if (tabIndex === 1) return null; // No actions for "All" tab
+
+    const handleSendNotification = (userId: string, nextStep: string) => {
+      dispatch(sendNotification({ userId, nextStep }));
+      alert('Notification sent!');
     };
 
     const handleApproveDocument = (documentId: string) => {
@@ -124,23 +131,23 @@ const HRVisaStatusPage: React.FC = () => {
 
 
     if (!status.optReceipt) {
-      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId)}>Send Notification</Button>;
+      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId, "optReceipt")}>Send Notification</Button>;
     } else if (status.optReceipt.status === 'Pending' || status.optReceipt.status === 'Rejected') {
       return renderDocumentActions(status.optReceipt);
     } else if (status.optReceipt.status === 'Approved' && !status.optEad) {
-      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId)}>Send Notification</Button>;
+      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId, "optEad")}>Send Notification</Button>;
     } else if (status.optEad?.status === 'Pending' || status.optEad?.status === 'Rejected') {
       return renderDocumentActions(status.optEad);
     } else if (status.optEad?.status === 'Approved' && !status.i983) {
-      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId)}>Send Notification</Button>;
+      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId, "i983")}>Send Notification</Button>;
     } else if (status.i983?.status === 'Pending' || status.i983?.status === 'Rejected') {
       return renderDocumentActions(status.i983);
     } else if (status.i983?.status === 'Approved' && !status.i20) {
-      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId)}>Send Notification</Button>;
+      return <Button variant="contained" color="primary" onClick={() => handleSendNotification(status.userId, "i20")}>Send Notification</Button>;
     } else if (status.i20?.status === 'Pending' || status.i20?.status === 'Rejected') {
       return renderDocumentActions(status.i20);
     }
-    return 'N/A';
+    return 'No action required';
   };
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -158,51 +165,7 @@ const HRVisaStatusPage: React.FC = () => {
     return fullName.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
-  // return (
-  //   <Container component="main" maxWidth="md">
-  //     <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>
-  //       <Typography component="h1" variant="h5" align="center">
-  //         Visa Status Management
-  //       </Typography>
-  //       <TableContainer component={MuiPaper}>
-  //         <Table>
-  //           <TableHead>
-  //             <TableRow>
-  //               <TableCell>Name</TableCell>
-  //               <TableCell>Work Authorization Title</TableCell>
-  //               <TableCell>Start Date</TableCell>
-  //               <TableCell>End Date</TableCell>
-  //               <TableCell>Number of Days Remaining</TableCell>
-  //               <TableCell>Next Steps</TableCell>
-  //               <TableCell>Action</TableCell>
-  //             </TableRow>
-  //           </TableHead>
-  //           <TableBody>
-  //             {visaStatuses?.map((status) => {
-  //               const user = status.userId;
-  //               const workAuth = status.onboardingApplication.workAuthorization;
-  //               const startDate = workAuth?.startDate;
-  //               const endDate = workAuth?.endDate;
-  //               const daysRemaining = endDate ? calculateDaysRemaining(endDate) : 'N/A';
 
-  //               return (
-  //                 <TableRow key={user._id}>
-  //                   <TableCell>{user.username}</TableCell>
-  //                   <TableCell>{workAuth.visaType || 'N/A'}</TableCell>
-  //                   <TableCell>{startDate || 'N/A'}</TableCell>
-  //                   <TableCell>{endDate || 'N/A'}</TableCell>
-  //                   <TableCell>{daysRemaining}</TableCell>
-  //                   <TableCell>{renderNextStep(status)}</TableCell>
-  //                   <TableCell>{renderAction(status)}</TableCell>
-  //                 </TableRow>
-  //               );
-  //             })}
-  //           </TableBody>
-  //         </Table>
-  //       </TableContainer>
-  //     </MuiPaper>
-  //   </Container>
-  // );
   return (
     <Container component="main" maxWidth="md">
       <MuiPaper style={{ padding: '16px', marginTop: '16px' }}>
@@ -232,6 +195,7 @@ const HRVisaStatusPage: React.FC = () => {
                 <TableCell>Number of Days Remaining</TableCell>
                 <TableCell>Next Steps</TableCell>
                 {tabIndex === 0 && <TableCell>Action</TableCell>}
+                {tabIndex === 1 && <TableCell>Approved Documents</TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -243,6 +207,7 @@ const HRVisaStatusPage: React.FC = () => {
                 const endDate = workAuth?.endDate;
                 const daysRemaining = endDate ? calculateDaysRemaining(endDate) : 'N/A';
 
+                const approvedDocuments = [status.optReceipt, status.optEad, status.i983, status.i20].filter(doc => doc?.status === 'Approved');
                 return (
                   <TableRow key={user._id}>
                     <TableCell>{onboardingApp ? `${onboardingApp.firstName} ${onboardingApp.lastName}` : user.username}</TableCell>
@@ -252,6 +217,24 @@ const HRVisaStatusPage: React.FC = () => {
                     <TableCell>{daysRemaining}</TableCell>
                     <TableCell>{renderNextStep(status)}</TableCell>
                     {tabIndex === 0 && <TableCell>{renderAction(status)}</TableCell>}
+                    {tabIndex === 1 && (
+                    <TableCell>
+                      <Table size="small">
+                        <TableBody>
+                          {approvedDocuments.map((doc, index) => (
+                            <TableRow key={doc?._id}>
+                              <TableCell>{doc?.type}</TableCell>
+                              <TableCell>
+                                <Link href={`${getFileUrl(doc?.url)}`} target="_blank" rel="noopener noreferrer" style={{ marginRight: '10px' }}>
+                                  View
+                                </Link>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                         </TableBody>
+                      </Table>
+                    </TableCell>
+                    )}
                   </TableRow>
                 );
               })}

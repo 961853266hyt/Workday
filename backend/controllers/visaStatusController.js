@@ -157,7 +157,7 @@ const getAllVisaStatusesByHR = async (req, res) => {
                 onboardingApplication,
             };
         }
-        console.log(visaStatuses);
+        //console.log(visaStatuses);
         res.json(visaStatuses);
     } catch (err) {
         res.status(500).json({ message: err.message });

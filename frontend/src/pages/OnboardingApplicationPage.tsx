@@ -17,6 +17,7 @@ import axios from 'axios';
 import { format } from 'date-fns';
 import PendingOnboarding from '../components/PendingOnboarding';
 import { red } from '@mui/material/colors';
+import { error } from 'console';
 
 const ssnRegex = /^\d{3}-\d{2}-\d{4}$/;
 const phoneRegex = /^(\+?\d{1,4}[\s-]?)?((\d{3}[\s-]?\d{3}[\s-]?\d{4})|(\(\d{3}\)\s?\d{3}[\s-]?\d{4}))$/;
@@ -177,7 +178,8 @@ const OnboardingApplication = () => {
             } else {
                 await dispatch(submitOnboardingApplication(formData));
                 alert('Application submitted successfully!');
-                navigate('/onboarding');
+                await fetchOnboardingApplication(user.id);
+                //navigate('/onboarding');
             }
             
         } catch (error) {
@@ -218,13 +220,13 @@ const OnboardingApplication = () => {
 
     const RejectedHeaderAndFeedback = () => (
         <>
-          <Typography component="h1" variant="h5" align="center" color={red}>
+          <Typography component="h1" variant="h5" align="center" color="error">
                 Your Application has been Rejected!
             </Typography>
             <Typography component="h2" variant="h5" align="center">
                 Please See HR's Feedback Below and Resubmit Your Application.
             </Typography>
-            <Typography component="h6" variant="h6" align="center">
+            <Typography component="h6" variant="h6" align="center" color="error">
                 Feedback: {onboardingData.feedback}
             </Typography>
         </>

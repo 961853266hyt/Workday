@@ -33,7 +33,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/');
+      navigate('/onboarding');
     }
   }, [isAuthenticated, navigate]);
 

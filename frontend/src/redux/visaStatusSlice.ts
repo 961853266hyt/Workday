@@ -68,11 +68,11 @@ export const uploadDocument:AsyncThunk<any, {userId: string; type: string; file:
 );
 
 // HR part
-export const sendNotification:AsyncThunk<any, {userId: string}, {}> = createAsyncThunk(
+export const sendNotification:AsyncThunk<any, {userId: string, nextStep: string}, {}> = createAsyncThunk(
   "visaStatus/sendNotification",
-  async ({ userId }, thunkAPI) => {
+  async ({ userId, nextStep }, thunkAPI) => {
     try {
-      const response = await axios.post(`${API_URL}/notifications`, { userId }); //TODO: implement backend logic
+      const response = await axios.post(`${API_URL}/notifications`, { userId, nextStep }); //TODO: implement backend logic
       return response.data;
     } catch (error:any) {
       return thunkAPI.rejectWithValue(error.response.data);

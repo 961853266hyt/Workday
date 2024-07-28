@@ -16,6 +16,7 @@ import { fetchVisaStatus,
   selectVisaStatusLoading,
  } from "../redux/visaStatusSlice";
 import { selectUser } from "../redux/userSlice";
+import { selectOnboardingData, fetchOnboardingApplication } from "../redux/onboardingSlice";
 
 
 
@@ -28,11 +29,24 @@ const EmployeeVisaStatusPage: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [documentType, setDocumentType] = useState<string>("");
 
+  const onboarding = useSelector(selectOnboardingData);
+
+
+  const isOptVisa = onboarding?.workAuthorization?.visaType === "F1(CPT/OPT)";
+
   useEffect(() => {
-    if (user) {
+    if (isOptVisa && user) {
       dispatch(fetchVisaStatus(user.id));
+      console.log("fetching visa status");
     }
   }, [user, dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchOnboardingApplication(user.id));
+    }
+  }
+  , [user, dispatch]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {

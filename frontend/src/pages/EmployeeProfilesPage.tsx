@@ -67,7 +67,8 @@ const EmployeeProfilesPage: React.FC = () => {
                                         </Link>
                                     </TableCell>
                                     <TableCell>{employee.onboardingApplication?.ssn}</TableCell>
-                                    <TableCell>{employee.onboardingApplication?.workAuthorization?.otherVisaTitle || ''}</TableCell>
+                                    <TableCell>{employee.onboardingApplication?.workAuthorization?.visaType !== 'Other'? employee.onboardingApplication?.workAuthorization?.visaType:
+                                                employee.onboardingApplication?.workAuthorization?.otherVisaTitle}</TableCell>
                                     <TableCell>{employee.onboardingApplication?.cell}</TableCell>
                                     <TableCell>{employee.email}</TableCell>
                                 </TableRow>
