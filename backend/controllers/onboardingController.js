@@ -205,11 +205,39 @@ const updateOnboardingApplicationByUserId = async (req, res) => {
     }
 }
 
+// 
+const getOnboardingApplicationsByStatus = async (req, res) => {
+    try {
+        const applications = await OnboardingApplication.find({ status: req.params.status });
+        res.json(applications);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+}
+
+const getOnboardingApplicationDetail = async (req, res) => {
+    try {
+        const application = await OnboardingApplication.findById(req.params.id)
+            .populate('userId')
+            .populate('profilePicture')
+            .populate('workAuthorization.optReceipt');
+            
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+        res.status(200).json(application);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
+
 module.exports = {
     getAllOnboardingApplications,
     getOnboardingApplicationById,
     updateOnboardingApplicationById,
     createNewOnboardingApplication,
     getOnboardingApplicationByUserId,
-    updateOnboardingApplicationByUserId
+    updateOnboardingApplicationByUserId,
+    getOnboardingApplicationsByStatus,
+    getOnboardingApplicationDetail,
 }

@@ -20,6 +20,7 @@ import EmployeeProfilesPage from './pages/EmployeeProfilesPage.tsx'
 import EmployeeProfile from './components/EmployeeProfile.tsx'
 import AuthenticateToken from './pages/AuthenticateToken.tsx'
 import HiringManagement from './pages/HiringManagement.tsx'
+import ApplicationDetail from './pages/ApplicationDetail.tsx'
 
 // const initializeAuth = (s:any) => {
 //   const token = localStorage.getItem('token')
@@ -51,6 +52,8 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path='employee-profiles' element={<EmployeeProfilesPage />} />
             <Route path="/employee/:id" element={<EmployeeProfile />} />
             <Route path="hiring-management" element={<HiringManagement />} />
+            <Route path="application/:id" element={<ApplicationDetail />} />
+            <Route path="*" element={<h1>Page Not Found</h1>} />
           </Route>
         </Routes>
       </BrowserRouter>
