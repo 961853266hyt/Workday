@@ -18,6 +18,8 @@ import { verifyToken } from './redux/userThunks.ts'
 import PersonalInformation from './pages/PersonalInformation.tsx'
 import EmployeeProfilesPage from './pages/EmployeeProfilesPage.tsx'
 import EmployeeProfile from './components/EmployeeProfile.tsx'
+import AuthenticateToken from './pages/AuthenticateToken.tsx'
+import HiringManagement from './pages/HiringManagement.tsx'
 
 // const initializeAuth = (s:any) => {
 //   const token = localStorage.getItem('token')
@@ -40,6 +42,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           </Route> */}
           <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
+            <Route path="/registration/:token" element={<AuthenticateToken />} />
             <Route path="/" element={<App />}>
             <Route path="onboarding" element={<OnboardingApplication />} />
             <Route path="test-theme" element={<TestTheme />} />
@@ -47,6 +50,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <Route path="personal-information" element={<PersonalInformation />} />
             <Route path='employee-profiles' element={<EmployeeProfilesPage />} />
             <Route path="/employee/:id" element={<EmployeeProfile />} />
+            <Route path="hiring-management" element={<HiringManagement />} />
           </Route>
         </Routes>
       </BrowserRouter>

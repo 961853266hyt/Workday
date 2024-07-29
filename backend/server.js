@@ -7,6 +7,7 @@ const documentRouter = require('./routers/documentRouter');
 const onboardingRouter = require('./routers/onboardingRouter');
 const visaStatusRouter = require('./routers/visaStatusRouter');
 const notificationRouter = require('./routers/notificationRouter');
+const registrationRouter = require('./routers/registrationRouter');
 const connectDB = require('./database');
 const port = 8000;
 
@@ -22,6 +23,7 @@ app.use('/api/documents', documentRouter);
 app.use('/api/onboarding', onboardingRouter);
 app.use('/api/visa-statuses', visaStatusRouter);
 app.use('/api/notifications', notificationRouter);
+app.use('/api/registration', registrationRouter);
 app.use('/uploads', express.static('uploads')); // dowload url: http://localhost:8000/uploads/filename
 app.use('/downloads', express.static('downloads'));
 

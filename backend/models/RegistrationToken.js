@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const RegistrationTokenSchema = new Schema({
-    token: { type: String, required: true, unique: true },
+const RegistrationTokenSchema = new mongoose.Schema({
+    token: { type: String, required: true },
     email: { type: String, required: true },
-    createdAt: { type: Date, default: Date.now },
-    expiresAt: { type: Date, required: true },
-    isUsed: { type: Boolean, default: false }
-  });
+    name: { type: String, required: true },
+    expiration: { type: Date, required: true },
+    status: { type: String, enum: ['Pending', 'Submitted', 'Used'], default: 'Pending' }
+});
 
-const RegistrationToken = mongoose.model('RegistrationToken', RegistrationTokenSchema);
-
-module.exports = RegistrationToken;
+module.exports = mongoose.model('RegistrationToken', RegistrationTokenSchema);

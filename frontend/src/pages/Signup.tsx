@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { signUp } from "../redux/userThunks";
 import { UnknownAction } from "@reduxjs/toolkit";
 import { selectIsAuthenticated } from "../redux/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const validationSchema = Yup.object({
   // firstName: Yup.string().required("First Name is required"),
@@ -31,6 +31,10 @@ export default function SignUp() {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { email } = location.state || { email: '' };
+
+
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/onboarding');
@@ -65,7 +69,7 @@ export default function SignUp() {
               // firstName: "",
               // lastName: "",
               username: "",
-              email: "",
+              email: email,
               password: "",
             }}
             validationSchema={validationSchema}
