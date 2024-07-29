@@ -1,5 +1,6 @@
 const OnboardingApplication = require('../models/OnboardingApplication');
 const Document = require('../models/Document');
+const VisaStatus = require('../models/VisaStatus');
 const fs = require('fs/promises');
 
 const unflatten = (data) => {
@@ -104,8 +105,17 @@ const updateOnboardingApplicationById = async (req, res) => {
         if (!application) {
             return res.status(404).json({ message: 'Application not found' });
         }
+        if (req.body.status === 'Approved' && application.workAuthorization?.optReceipt) {
+            // create new visa status according to the workAuthorization.optReceipt
+            const visaStatus = new VisaStatus({
+                userId: application.userId,
+                optReceipt: application.workAuthorization.optReceipt,
+            });
+            await visaStatus.save();
+        }
         res.status(200).json(application);
     } catch (err) {
+        console.log(err);
         res.status(500).json({ message: err.message });
     }
 }

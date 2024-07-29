@@ -84,10 +84,23 @@ export const updateUserInfo:AsyncThunk<any, any, {}> = createAsyncThunk(
       // we want to exclude the documents from the form data
       formData.delete('documents');
       const response = await axios.put(`${API_URL}/onboarding/${onboardingId}`, formData);
+      console.log('updateUserInfo', response.data);
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
+  }
+);
+
+export const createVisaStatus:AsyncThunk<any, {userId: string, optReceipt: string}, {}> = createAsyncThunk(
+  'onboarding/createVisaStatus',
+  async ({ userId, optReceipt }, thunkAPI) => {
+      try {
+          const response = await axios.post(`${API_URL}/visa-statuses`, { userId, optReceipt });
+          return response.data;
+      } catch (error: any) {
+          return thunkAPI.rejectWithValue(error.response.data);
+      }
   }
 );
 

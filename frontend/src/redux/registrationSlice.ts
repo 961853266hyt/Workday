@@ -111,6 +111,17 @@ export const updateApplicationStatusDetails:AsyncThunk<any, {id: string, status:
     }
 );
 
+export const createVisaStatus:AsyncThunk<any, {userId: string, optReceipt: string}, {}> = createAsyncThunk(
+    'registration/createVisaStatus',
+    async ({ userId, optReceipt }, thunkAPI) => {
+        try {
+            const response = await axios.post(`${API_URL}/visa-statuses`, { userId, optReceipt });
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
 
 const registrationSlice = createSlice({
     name: 'registration',

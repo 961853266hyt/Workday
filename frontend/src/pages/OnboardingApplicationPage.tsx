@@ -179,7 +179,7 @@ const OnboardingApplication = () => {
                 await dispatch(submitOnboardingApplication(formData));
                 alert('Application submitted successfully!');
                 await fetchOnboardingApplication(user.id);
-                //navigate('/onboarding');
+                navigate('/onboarding');
             }
             
         } catch (error) {
